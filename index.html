@@ -3,149 +3,192 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>InvoiceForge – Free Invoice Generator</title>
-    <link rel="stylesheet" href="style.css">
+    <title>InvoiceForge – Free invoice generator, no signup</title>
+    <meta name="description" content="Create tax-compliant invoices in under a minute. Real PDF text for QuickBooks. Your data never leaves the browser.">
+    <!-- Tailwind CSS + Geist Font -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            background: #0A0A0B;
-            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-            color: #FAFAFA;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-        }
-        .header {
-            background: #111115;
-            padding: 1rem 2rem;
-            border-bottom: 1px solid #2a2a2e;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .logo { font-size: 1.5rem; font-weight: 700; }
-        .logo span { color: #F97316; }
-        .main {
-            display: flex;
-            flex: 1;
-            overflow: hidden;
-        }
-        .sidebar {
-            width: 360px;
-            background: #111115;
-            border-right: 1px solid #2a2a2e;
-            overflow-y: auto;
-            padding: 1.5rem;
-        }
-        .preview-area {
-            flex: 1;
-            background: #0A0A0B;
-            overflow-y: auto;
-            padding: 2rem;
-            display: flex;
-            justify-content: center;
-        }
-        .invoice-preview {
-            width: 210mm;
-            background: white;
-            color: black;
-            border-radius: 8px;
-            padding: 2rem;
-            min-height: 297mm;
-            box-shadow: 0 20px 35px rgba(0,0,0,0.3);
-        }
-        .placeholder {
-            color: #888;
-            text-align: center;
-            padding: 2rem;
-        }
-        @media (max-width: 700px) {
-            .main { flex-direction: column; }
-            .sidebar { width: 100%; max-height: 50vh; }
-        }
+        body { font-family: 'Geist', system-ui, sans-serif; }
+        .font-mono { font-family: 'Geist Mono', monospace; }
     </style>
 </head>
-<body>
-<div class="header">
-    <div class="logo">forge<span>.invoice</span></div>
-    <button style="background: #F97316; border: none; padding: 0.4rem 1rem; border-radius: 30px; font-weight: 600;">Download PDF</button>
-</div>
-<div class="main">
-    <div class="sidebar">
-    <div style="display: flex; gap: 0.5rem; border-bottom: 1px solid var(--border); margin-bottom: 1rem;">
-        <button class="tab-btn active" data-tab="from">From</button>
-        <button class="tab-btn" data-tab="to">To</button>
-        <button class="tab-btn" data-tab="items">Items</button>
-        <button class="tab-btn" data-tab="settings">Settings</button>
-    </div>
+<body class="bg-white text-gray-900">
 
-    <!-- From Tab -->
-    <div id="tab-from" class="tab-content active">
-        <div class="form-group"><label>Your Name</label><input type="text" id="fromName" placeholder="Acme Inc."></div>
-        <div class="form-group"><label>Email</label><input type="email" id="fromEmail" placeholder="you@example.com"></div>
-        <div class="form-group"><label>Phone</label><input type="text" id="fromPhone" placeholder="+92 300 1234567"></div>
-        <div class="form-group"><label>Address</label><textarea id="fromAddress" rows="2" placeholder="Street, City, Country"></textarea></div>
-        <div class="form-group"><label>Website</label><input type="text" id="fromWebsite" placeholder="https://yourwebsite.com"></div>
-        <div class="form-group"><label>Tax ID (optional)</label><input type="text" id="fromTaxId" placeholder="NTN / VAT number"></div>
-        <div class="form-group"><label>Logo (optional)</label><input type="file" id="logoUpload" accept="image/*"></div>
-    </div>
+<!-- Floating pill nav -->
+<header class="fixed top-4 left-1/2 -translate-x-1/2 z-50">
+    <nav class="bg-white/80 backdrop-blur-lg border border-gray-200 rounded-full px-2 py-2 flex items-center gap-1 shadow-sm">
+        <div class="px-4 font-semibold text-gray-900">InvoiceForge</div>
+        <a href="#templates" class="px-3 py-1.5 text-sm text-gray-500 hover:text-gray-900 rounded-full">Templates</a>
+        <a href="#guide" class="px-3 py-1.5 text-sm text-gray-500 hover:text-gray-900 rounded-full">Guide</a>
+        <a href="https://github.com/baneen404/invoice-forge" class="px-3 py-1.5 text-sm text-gray-500 hover:text-gray-900 rounded-full">GitHub</a>
+        <a href="app.html" class="bg-[#0066FF] text-white px-4 py-1.5 rounded-full text-sm font-medium ml-2 hover:bg-[#0052CC] transition">New Invoice</a>
+    </nav>
+</header>
 
-    <!-- To Tab -->
-    <div id="tab-to" class="tab-content">
-        <div class="form-group"><label>Client Name</label><input type="text" id="toName" placeholder="Client Name"></div>
-        <div class="form-group"><label>Client Email</label><input type="email" id="toEmail" placeholder="client@example.com"></div>
-        <div class="form-group"><label>Client Phone</label><input type="text" id="toPhone" placeholder="+92 300 1234567"></div>
-        <div class="form-group"><label>Client Address</label><textarea id="toAddress" rows="2" placeholder="Street, City, Country"></textarea></div>
-        <div class="form-group"><label>Client Tax ID / NTN (optional)</label><input type="text" id="toTaxId" placeholder="For corporate invoices"></div>
-    </div>
+<main>
+    <!-- Hero section -->
+    <section class="pt-40 pb-20 text-center max-w-3xl mx-auto px-6">
+        <div class="inline-flex items-center gap-2 bg-blue-50 text-[#0066FF] text-xs font-medium px-3 py-1 rounded-full mb-6">
+            <span>🔒</span> No signup. No tracking. No BS.
+        </div>
+        <h1 class="text-5xl md:text-6xl font-bold tracking-tight text-gray-900">
+            The invoice generator for people who hate invoicing
+        </h1>
+        <p class="text-lg text-gray-500 mt-6 max-w-xl mx-auto">
+            Create tax-compliant invoices in under a minute. Real PDF text for QuickBooks.
+            Works offline. Your data never leaves the browser.
+        </p>
+        <div class="flex items-center justify-center gap-3 mt-8">
+            <a href="app.html" class="bg-[#0066FF] text-white px-6 py-3 rounded-lg font-medium hover:bg-[#0052CC] transition">Create Invoice — It's Free</a>
+            <button id="demoScroll" class="text-gray-500 text-sm">See 30-sec demo ↓</button>
+        </div>
+    </section>
 
-    <!-- Items Tab (placeholder – we'll fill later) -->
-    <div id="tab-items" class="tab-content">
-        <p class="placeholder">Line items table will go here.</p>
-    </div>
+    <!-- Live demo (interactive mock) -->
+    <section id="demo" class="max-w-5xl mx-auto px-6 pb-24">
+        <div class="bg-gray-50 border border-gray-200 rounded-2xl p-2 shadow-xl">
+            <div class="bg-white rounded-xl border border-gray-200">
+                <!-- Browser bar -->
+                <div class="flex items-center gap-1.5 p-3 border-b border-gray-200">
+                    <div class="w-3 h-3 rounded-full bg-red-400"></div>
+                    <div class="w-3 h-3 rounded-full bg-yellow-400"></div>
+                    <div class="w-3 h-3 rounded-full bg-green-400"></div>
+                </div>
+                <!-- Interactive mini-form -->
+                <div class="grid md:grid-cols-2 gap-8 p-8">
+                    <div class="space-y-4">
+                        <input type="text" id="demoClient" placeholder="Client Name" class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#0066FF]">
+                        <input type="text" id="demoService" placeholder="Service Description" class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm">
+                        <div class="flex gap-2">
+                            <input type="number" id="demoQty" placeholder="Qty" value="1" class="w-24 border border-gray-300 rounded-lg px-4 py-2 text-sm">
+                            <input type="number" id="demoRate" placeholder="Rate" value="2340" class="flex-1 border border-gray-300 rounded-lg px-4 py-2 text-sm">
+                        </div>
+                        <div class="bg-blue-50 p-4 rounded-lg">
+                            <div class="flex justify-between text-sm">
+                                <span class="font-medium">Total</span>
+                                <span id="demoTotal" class="font-mono font-semibold text-[#0066FF]">$2,340.00</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 rounded-lg p-6">
+                        <div class="text-xs space-y-2 font-mono text-gray-700">
+                            <div class="font-bold">INVOICE INV-001</div>
+                            <div>───────────</div>
+                            <div id="demoClientPreview">Client Name</div>
+                            <div id="demoServicePreview">Service...</div>
+                            <div id="demoAmountPreview">$2,340.00</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <p class="text-center text-sm text-gray-400 mt-4">Try it above. Everything runs in your browser. ↓</p>
+    </section>
 
-    <!-- Settings Tab with all new fields -->
-    <div id="tab-settings" class="tab-content">
-        <div class="form-group"><label>Invoice Number</label><input type="text" id="invNumber" placeholder="INV-001"></div>
-        <div class="form-group"><label>Issue Date</label><input type="date" id="issueDate"></div>
-        <div class="form-group"><label>Due Terms</label>
-            <select id="dueTerms">
-                <option value="0">Due on receipt</option>
-                <option value="7">Net 7</option>
-                <option value="14" selected>Net 14</option>
-                <option value="30">Net 30</option>
-                <option value="custom">Custom date</option>
-            </select>
+    <!-- Features grid -->
+    <section class="max-w-5xl mx-auto px-6 py-24">
+        <h2 class="text-3xl font-semibold text-center mb-12">Everything you need. Nothing you don't.</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="p-5 border border-gray-100 rounded-xl bg-white shadow-sm">
+                <div class="text-[#0066FF] mb-3">📄</div>
+                <h3 class="font-semibold">Text PDFs, Not Images</h3>
+                <p class="text-sm text-gray-500 mt-1">Exports real text PDFs. Imports into QuickBooks, Xero, Zoho without OCR errors.</p>
+            </div>
+            <div class="p-5 border border-gray-100 rounded-xl bg-white shadow-sm">
+                <div class="text-[#0066FF] mb-3">🏦</div>
+                <h3 class="font-semibold">Tax & NTN Ready</h3>
+                <p class="text-sm text-gray-500 mt-1">VAT, GST, NTN fields built-in. Compliant with PK, EU, US invoice laws.</p>
+            </div>
+            <div class="p-5 border border-gray-100 rounded-xl bg-white shadow-sm">
+                <div class="text-[#0066FF] mb-3">🔒</div>
+                <h3 class="font-semibold">100% Private</h3>
+                <p class="text-sm text-gray-500 mt-1">No accounts. No servers. Your client data never touches our servers because we have none.</p>
+            </div>
+            <div class="p-5 border border-gray-100 rounded-xl bg-white shadow-sm">
+                <div class="text-[#0066FF] mb-3">💾</div>
+                <h3 class="font-semibold">Save & Reuse</h3>
+                <p class="text-sm text-gray-500 mt-1">Export .forge files. Re-import clients and line items. Never type twice.</p>
+            </div>
+            <div class="p-5 border border-gray-100 rounded-xl bg-white shadow-sm">
+                <div class="text-[#0066FF] mb-3">🖨️</div>
+                <h3 class="font-semibold">Status Tracking</h3>
+                <p class="text-sm text-gray-500 mt-1">Mark as Sent, Paid, Overdue. PDF auto-stamps. Know where your money is.</p>
+            </div>
+            <div class="p-5 border border-gray-100 rounded-xl bg-white shadow-sm">
+                <div class="text-[#0066FF] mb-3">📱</div>
+                <h3 class="font-semibold">Works Offline</h3>
+                <p class="text-sm text-gray-500 mt-1">PWA support. Invoice on a plane. No internet needed after first load.</p>
+            </div>
         </div>
-        <div class="form-group" id="customDateGroup" style="display:none;"><label>Custom Due Date</label><input type="date" id="customDueDate"></div>
-        <div class="form-group"><label>Currency</label>
-            <select id="currency">
-                <option value="USD">USD ($)</option>
-                <option value="PKR">PKR (Rs)</option>
-                <option value="EUR">EUR (€)</option>
-            </select>
+    </section>
+
+    <!-- Comparison table -->
+    <section class="max-w-4xl mx-auto px-6 py-24">
+        <h2 class="text-3xl font-semibold text-center mb-12">Why not Word or Canva?</h2>
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm text-left">
+                <thead class="bg-gray-50 border-b">
+                    <tr><th class="p-3"></th><th class="p-3">Word/Excel</th><th class="p-3">Canva</th><th class="p-3 text-[#0066FF]">InvoiceForge</th></tr>
+                </thead>
+                <tbody>
+                    <tr class="border-b"><td class="p-3">PDF Type</td><td>Text ✓</td><td>Image ✗</td><td class="font-semibold">Text ✓</td></tr>
+                    <tr class="border-b"><td class="p-3">Auto-Calculation</td><td>Manual ✗</td><td>Manual ✗</td><td class="font-semibold">Auto ✓</td></tr>
+                    <tr class="border-b"><td class="p-3">Templates</td><td>Ugly ✗</td><td>Pretty ✓</td><td class="font-semibold">Pro ✓</td></tr>
+                    <tr class="border-b"><td class="p-3">Privacy</td><td>Local ✓</td><td>Uploads ✗</td><td class="font-semibold">Local ✓</td></tr>
+                    <tr><td class="p-3">Price</td><td>Free ✓</td><td>Freemium ✗</td><td class="font-semibold">Free ✓</td></tr>
+                </tbody>
+            </table>
         </div>
-        <div class="form-group"><label>Tax Rate (%)</label><input type="number" id="taxRate" step="0.1" value="17"></div>
-        <div class="form-group"><label>Discount (%)</label><input type="number" id="discount" step="1" value="0"></div>
-        <div class="form-group"><label>PO Number (optional)</label><input type="text" id="poNumber" placeholder="Client Purchase Order #"></div>
-        <div class="form-group"><label>Payment Info (bank details, JazzCash, etc.)</label><textarea id="paymentInfo" rows="3" placeholder="Bank: HBL\nIBAN: PK36HABB...\nJazzCash: 03xx-xxxxxxx"></textarea></div>
-        <div class="form-group"><label>Status</label>
-            <select id="status">
-                <option value="draft">Draft</option>
-                <option value="sent">Sent</option>
-                <option value="paid">Paid</option>
-                <option value="overdue">Overdue</option>
-            </select>
+        <p class="text-center text-sm text-gray-400 mt-6">If you use Canva for invoices, your accountant hates you.</p>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-200 py-12">
+        <div class="max-w-5xl mx-auto px-6 flex justify-between text-sm text-gray-400">
+            <div>© 2026 InvoiceForge</div>
+            <div class="flex gap-6">
+                <a href="#" class="hover:text-gray-600">Privacy</a>
+                <a href="#" class="hover:text-gray-600">Terms</a>
+                <a href="https://github.com/baneen404/invoice-forge" class="hover:text-gray-600">GitHub</a>
+            </div>
         </div>
-        <div class="form-group"><label>Notes / Terms</label><textarea id="notes" rows="2" placeholder="Thank you for your business!"></textarea></div>
-    </div>
-</div>
-    <div class="preview-area">
-        <div class="invoice-preview">
-            <p class="placeholder">Live invoice preview will appear here</p>
-        </div>
-    </div>
-</div>
-<script src="script.js"></script>
+    </footer>
+</main>
+
+<script>
+    // Live demo interactivity
+    const clientInput = document.getElementById('demoClient');
+    const serviceInput = document.getElementById('demoService');
+    const qtyInput = document.getElementById('demoQty');
+    const rateInput = document.getElementById('demoRate');
+    const totalSpan = document.getElementById('demoTotal');
+    const clientPreview = document.getElementById('demoClientPreview');
+    const servicePreview = document.getElementById('demoServicePreview');
+    const amountPreview = document.getElementById('demoAmountPreview');
+
+    function updateDemo() {
+        const client = clientInput.value || 'Client Name';
+        const service = serviceInput.value || 'Service description';
+        const qty = parseFloat(qtyInput.value) || 0;
+        const rate = parseFloat(rateInput.value) || 0;
+        const total = qty * rate;
+        clientPreview.innerText = client;
+        servicePreview.innerText = service.substring(0, 20);
+        totalSpan.innerText = `$${total.toFixed(2)}`;
+        amountPreview.innerText = `$${total.toFixed(2)}`;
+    }
+
+    clientInput.addEventListener('input', updateDemo);
+    serviceInput.addEventListener('input', updateDemo);
+    qtyInput.addEventListener('input', updateDemo);
+    rateInput.addEventListener('input', updateDemo);
+    updateDemo();
+
+    // Scroll to demo
+    document.getElementById('demoScroll').addEventListener('click', () => {
+        document.getElementById('demo').scrollIntoView({ behavior: 'smooth' });
+    });
+</script>
 </body>
 </html>
