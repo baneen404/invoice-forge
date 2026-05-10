@@ -5,36 +5,46 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>InvoiceForge – Create Invoice</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Geist', system-ui, sans-serif; background: #F9FAFB; -webkit-font-smoothing: antialiased; }
-        .font-mono { font-family: 'Geist Mono', monospace; }
+        body { font-family: 'Inter', sans-serif; background: #F9FAFB; }
         .tab-active { border-bottom: 2px solid #0066FF; color: #0066FF; }
-        .tab-btn { cursor: pointer; }
     </style>
 </head>
 <body class="bg-gray-50">
 
-<header class="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-auto">
-    <nav class="bg-white/80 backdrop-blur-lg border border-gray-200 rounded-full px-2 py-2 flex items-center gap-1 shadow-sm">
-        <a href="index.html" class="px-4 font-semibold text-gray-900">InvoiceForge</a>
-        <a href="#" class="px-3 py-1.5 text-sm text-gray-500 hover:text-gray-900 rounded-full">Templates</a>
-        <a href="#" class="px-3 py-1.5 text-sm text-gray-500 hover:text-gray-900 rounded-full">Guide</a>
-        <a href="https://github.com/baneen404/invoice-forge" class="px-3 py-1.5 text-sm text-gray-500 hover:text-gray-900 rounded-full">GitHub</a>
-        <span class="bg-[#0066FF] text-white px-4 py-1.5 rounded-full text-sm font-medium ml-2">New Invoice</span>
-    </nav>
-</header>
+<!-- Simple header -->
+<div class="bg-white border-b border-gray-200 sticky top-0 z-10">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+        <a href="index.html" class="font-bold text-xl text-[#0066FF]">InvoiceForge</a>
+        <div class="flex gap-4 text-sm">
+            <a href="#" class="text-gray-600">Templates</a>
+            <a href="#" class="text-gray-600">Guide</a>
+            <a href="#" class="text-gray-600">GitHub</a>
+        </div>
+    </div>
+</div>
 
-<main class="pt-24 pb-12 px-4 max-w-7xl mx-auto">
+<main class="max-w-7xl mx-auto px-4 py-8">
+    <!-- TEMPLATE SWITCHER - VISIBLE AT TOP -->
+    <div class="mb-6 bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
+        <label class="block text-sm font-medium text-gray-700 mb-2">Choose Template Style</label>
+        <div class="flex gap-3">
+            <button id="templateLetter" class="template-btn px-4 py-2 text-sm border rounded-lg hover:bg-gray-50 transition">Letter</button>
+            <button id="templateLedger" class="template-btn px-4 py-2 text-sm border rounded-lg hover:bg-gray-50 transition">Ledger</button>
+            <button id="templateInvoice" class="template-btn px-4 py-2 text-sm border rounded-lg hover:bg-gray-50 transition">Invoice</button>
+        </div>
+    </div>
+
     <div class="grid lg:grid-cols-2 gap-8">
         <!-- LEFT: FORM PANEL -->
         <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+            <!-- Tabs -->
             <div class="flex border-b border-gray-200 mb-6">
                 <button class="tab-btn px-4 py-2 text-sm font-medium tab-active" data-tab="from">From</button>
                 <button class="tab-btn px-4 py-2 text-sm font-medium text-gray-500" data-tab="to">To</button>
                 <button class="tab-btn px-4 py-2 text-sm font-medium text-gray-500" data-tab="items">Items</button>
                 <button class="tab-btn px-4 py-2 text-sm font-medium text-gray-500" data-tab="settings">Settings</button>
-                <button class="tab-btn px-4 py-2 text-sm font-medium text-gray-500" data-tab="extras">Extras</button>
             </div>
 
             <!-- From Tab -->
@@ -44,8 +54,7 @@
                 <div><label class="block text-sm font-medium text-gray-700">Phone</label><input type="text" id="fromPhone" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
                 <div><label class="block text-sm font-medium text-gray-700">Address</label><textarea id="fromAddress" rows="2" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></textarea></div>
                 <div><label class="block text-sm font-medium text-gray-700">Website</label><input type="text" id="fromWebsite" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
-                <div><label class="block text-sm font-medium text-gray-700">Tax ID (optional)</label><input type="text" id="fromTaxId" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
-                <div><label class="block text-sm font-medium text-gray-700">Logo</label><input type="file" accept="image/*" id="logoUpload"></div>
+                <div><label class="block text-sm font-medium text-gray-700">Tax ID</label><input type="text" id="fromTaxId" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
             </div>
 
             <!-- To Tab -->
@@ -54,7 +63,7 @@
                 <div><label class="block text-sm font-medium text-gray-700">Client Email</label><input type="email" id="toEmail" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
                 <div><label class="block text-sm font-medium text-gray-700">Client Phone</label><input type="text" id="toPhone" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
                 <div><label class="block text-sm font-medium text-gray-700">Client Address</label><textarea id="toAddress" rows="2" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></textarea></div>
-                <div><label class="block text-sm font-medium text-gray-700">Client Tax ID / NTN</label><input type="text" id="toTaxId" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
+                <div><label class="block text-sm font-medium text-gray-700">Client Tax ID</label><input type="text" id="toTaxId" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
             </div>
 
             <!-- Items Tab -->
@@ -65,37 +74,23 @@
                         <tbody id="items-tbody"></tbody>
                     </table>
                 </div>
-                <button id="addItemBtn" class="mt-3 text-sm text-[#0066FF] hover:text-[#0052CC] flex items-center gap-1">+ Add line item</button>
-                <div class="mt-6 border-t border-gray-200 pt-4 space-y-2 text-right">
-                    <div class="flex justify-end gap-8 text-sm"><span>Subtotal</span><span id="subtotal" class="font-mono">$0.00</span></div>
-                    <div class="flex justify-end gap-8 text-sm"><span>Tax (<span id="taxRateDisplay">17</span>%)</span><span id="taxAmount" class="font-mono">$0.00</span></div>
-                    <div class="flex justify-end gap-8 text-base font-semibold"><span>Total</span><span id="grandTotal" class="font-mono text-[#0066FF]">$0.00</span></div>
+                <button id="addItemBtn" class="mt-3 text-sm text-[#0066FF] hover:text-[#0052CC]">+ Add line item</button>
+                <div class="mt-6 border-t pt-4 space-y-2 text-right">
+                    <div class="flex justify-end gap-8"><span>Subtotal</span><span id="subtotal" class="font-mono">$0.00</span></div>
+                    <div class="flex justify-end gap-8"><span>Tax (<span id="taxRateDisplay">17</span>%)</span><span id="taxAmount" class="font-mono">$0.00</span></div>
+                    <div class="flex justify-end gap-8 font-semibold"><span>Total</span><span id="grandTotal" class="font-mono text-[#0066FF]">$0.00</span></div>
                 </div>
             </div>
 
             <!-- Settings Tab -->
             <div id="tab-settings" class="tab-pane hidden space-y-4">
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Template Style</label>
-                    <div class="flex gap-2" id="templateSwitcherContainer">
-                        <button data-template="Letter" class="template-btn px-3 py-1 text-sm border border-gray-300 rounded-lg hover:border-[#0066FF]">Letter</button>
-                        <button data-template="Ledger" class="template-btn px-3 py-1 text-sm border border-gray-300 rounded-lg hover:border-[#0066FF]">Ledger</button>
-                        <button data-template="Invoice" class="template-btn px-3 py-1 text-sm border border-gray-300 rounded-lg hover:border-[#0066FF]">Invoice</button>
-                    </div>
-                </div>
                 <div><label class="block text-sm font-medium text-gray-700">Invoice Number</label><input type="text" id="invNumber" value="INV-001" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
                 <div><label class="block text-sm font-medium text-gray-700">Issue Date</label><input type="date" id="issueDate" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
                 <div><label class="block text-sm font-medium text-gray-700">Due Terms</label><select id="dueTerms" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"><option>Net 7</option><option selected>Net 14</option><option>Net 30</option><option>Due on receipt</option></select></div>
                 <div><label class="block text-sm font-medium text-gray-700">Currency</label><select id="currency" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"><option value="USD">USD ($)</option><option value="PKR">PKR (Rs)</option><option value="EUR">EUR (€)</option></select></div>
                 <div><label class="block text-sm font-medium text-gray-700">Tax Rate (%)</label><input type="number" id="taxRate" value="17" step="0.1" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
-                <div><label class="block text-sm font-medium text-gray-700">Discount (%)</label><input type="number" id="discount" value="0" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
-                <div><label class="block text-sm font-medium text-gray-700">PO Number (optional)</label><input type="text" id="poNumber" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
-                <div><label class="block text-sm font-medium text-gray-700">Payment Info</label><textarea id="paymentInfo" rows="3" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></textarea></div>
-                <div><label class="block text-sm font-medium text-gray-700">Status</label><select id="status" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"><option>Draft</option><option>Sent</option><option>Paid</option><option>Overdue</option></select></div>
-                <div><label class="block text-sm font-medium text-gray-700">Notes / Terms</label><textarea id="notes" rows="2" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></textarea></div>
+                <div><label class="block text-sm font-medium text-gray-700">Notes</label><textarea id="notes" rows="2" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></textarea></div>
             </div>
-
-            <div id="tab-extras" class="tab-pane hidden"><p class="text-gray-500 text-center py-8">Late fee, signature, custom fields coming soon.</p></div>
         </div>
 
         <!-- RIGHT: LIVE PREVIEW -->
@@ -116,7 +111,7 @@
 </main>
 
 <script>
-    // Tab switching
+    // ---------- TAB SWITCHING ----------
     const tabs = document.querySelectorAll('.tab-btn');
     const panes = document.querySelectorAll('.tab-pane');
     tabs.forEach(btn => {
@@ -129,10 +124,13 @@
         });
     });
 
-    // Items data
+    // ---------- DATA ----------
     let items = [];
 
-    function getCurrencySymbol() { const map = { USD: '$', PKR: 'Rs', EUR: '€' }; return map[document.getElementById('currency')?.value] || '$'; }
+    function getCurrencySymbol() {
+        const map = { USD: '$', PKR: 'Rs', EUR: '€' };
+        return map[document.getElementById('currency')?.value] || '$';
+    }
 
     function calculateTotals() {
         const subtotal = items.reduce((sum, i) => sum + (i.qty || 0) * (i.rate || 0), 0);
@@ -154,8 +152,9 @@
             row.className = 'border-b border-gray-100';
             const descCell = row.insertCell(0); descCell.className = 'py-2';
             const descInput = document.createElement('input');
-            descInput.type = 'text'; descInput.value = item.description || ''; descInput.placeholder = 'Web design, consulting...';
-            descInput.className = 'w-full bg-transparent border-none focus:ring-0 p-0 text-sm';
+            descInput.type = 'text'; descInput.value = item.description || '';
+            descInput.placeholder = 'Web design...';
+            descInput.className = 'w-full bg-transparent border-none p-0 text-sm';
             descInput.addEventListener('input', (e) => { items[idx].description = e.target.value; saveFullInvoice(); calculateTotals(); updateLivePreview(); });
             descCell.appendChild(descInput);
             const qtyCell = row.insertCell(1); qtyCell.className = 'text-center py-2';
@@ -172,7 +171,7 @@
             const symbol = getCurrencySymbol();
             rateCell.innerHTML = `<span class="mr-1">${symbol}</span>`; rateCell.appendChild(rateInput);
             const amountCell = row.insertCell(3); amountCell.className = 'text-right font-mono py-2';
-            const amount = (item.qty * item.rate); amountCell.innerText = `${symbol}${amount.toFixed(2)}`;
+            amountCell.innerText = `${symbol}${((item.qty||0)*(item.rate||0)).toFixed(2)}`;
             const delCell = row.insertCell(4); delCell.className = 'text-center py-2';
             const delBtn = document.createElement('button'); delBtn.innerHTML = '✕'; delBtn.className = 'text-red-500 hover:text-red-700 text-xs';
             delBtn.addEventListener('click', () => { if (items.length === 1) return; items.splice(idx, 1); renderItemsTable(); saveFullInvoice(); calculateTotals(); updateLivePreview(); });
@@ -184,9 +183,9 @@
     function saveFullInvoice() {
         const invoice = {
             items,
-            from: { name: document.getElementById('fromName')?.value || '', email: document.getElementById('fromEmail')?.value || '', phone: document.getElementById('fromPhone')?.value || '', address: document.getElementById('fromAddress')?.value || '', website: document.getElementById('fromWebsite')?.value || '', taxId: document.getElementById('fromTaxId')?.value || '' },
-            to: { name: document.getElementById('toName')?.value || '', email: document.getElementById('toEmail')?.value || '', phone: document.getElementById('toPhone')?.value || '', address: document.getElementById('toAddress')?.value || '', taxId: document.getElementById('toTaxId')?.value || '' },
-            settings: { invoiceNumber: document.getElementById('invNumber')?.value || 'INV-001', issueDate: document.getElementById('issueDate')?.value || new Date().toISOString().slice(0,10), dueTerms: document.getElementById('dueTerms')?.value || '14', currency: document.getElementById('currency')?.value || 'USD', taxRate: parseFloat(document.getElementById('taxRate')?.value) || 17, discount: parseFloat(document.getElementById('discount')?.value) || 0, poNumber: document.getElementById('poNumber')?.value || '', paymentInfo: document.getElementById('paymentInfo')?.value || '', status: document.getElementById('status')?.value || 'draft', notes: document.getElementById('notes')?.value || '' }
+            from: { name: document.getElementById('fromName')?.value, email: document.getElementById('fromEmail')?.value, phone: document.getElementById('fromPhone')?.value, address: document.getElementById('fromAddress')?.value, website: document.getElementById('fromWebsite')?.value, taxId: document.getElementById('fromTaxId')?.value },
+            to: { name: document.getElementById('toName')?.value, email: document.getElementById('toEmail')?.value, phone: document.getElementById('toPhone')?.value, address: document.getElementById('toAddress')?.value, taxId: document.getElementById('toTaxId')?.value },
+            settings: { invoiceNumber: document.getElementById('invNumber')?.value, issueDate: document.getElementById('issueDate')?.value, dueTerms: document.getElementById('dueTerms')?.value, currency: document.getElementById('currency')?.value, taxRate: document.getElementById('taxRate')?.value, notes: document.getElementById('notes')?.value }
         };
         localStorage.setItem('invoiceforge_app', JSON.stringify(invoice));
     }
@@ -195,6 +194,7 @@
         const saved = localStorage.getItem('invoiceforge_app');
         if (!saved) return;
         const data = JSON.parse(saved);
+        if (data.items) { items = data.items; renderItemsTable(); }
         if (data.from) {
             for (let k in data.from) { let el = document.getElementById(`from${k.charAt(0).toUpperCase()}${k.slice(1)}`); if (el) el.value = data.from[k]; }
         }
@@ -204,12 +204,11 @@
         if (data.settings) {
             for (let k in data.settings) { let el = document.getElementById(k); if (el) el.value = data.settings[k]; }
         }
-        if (data.items) { items = data.items; renderItemsTable(); }
     }
 
-    // Template switcher (event delegation)
+    // ---------- TEMPLATE SWITCHER ----------
     let currentTemplate = localStorage.getItem('invoiceTemplate') || 'Letter';
-    function setActiveTemplateButton() {
+    function updateTemplateButtons() {
         document.querySelectorAll('.template-btn').forEach(btn => {
             if (btn.innerText === currentTemplate) {
                 btn.classList.add('bg-blue-50', 'border-blue-500', 'text-blue-600');
@@ -219,17 +218,13 @@
         });
         document.getElementById('templateBadge').innerText = currentTemplate;
     }
-    document.getElementById('templateSwitcherContainer')?.addEventListener('click', (e) => {
-        const btn = e.target.closest('.template-btn');
-        if (!btn) return;
-        currentTemplate = btn.innerText;
-        localStorage.setItem('invoiceTemplate', currentTemplate);
-        setActiveTemplateButton();
-        updateLivePreview();
-    });
-    setActiveTemplateButton();
 
-    // Live preview
+    document.getElementById('templateLetter').addEventListener('click', () => { currentTemplate = 'Letter'; localStorage.setItem('invoiceTemplate', currentTemplate); updateTemplateButtons(); updateLivePreview(); });
+    document.getElementById('templateLedger').addEventListener('click', () => { currentTemplate = 'Ledger'; localStorage.setItem('invoiceTemplate', currentTemplate); updateTemplateButtons(); updateLivePreview(); });
+    document.getElementById('templateInvoice').addEventListener('click', () => { currentTemplate = 'Invoice'; localStorage.setItem('invoiceTemplate', currentTemplate); updateTemplateButtons(); updateLivePreview(); });
+    updateTemplateButtons();
+
+    // ---------- LIVE PREVIEW ----------
     function updateLivePreview() {
         const from = { name: document.getElementById('fromName')?.value || 'Your Name', email: document.getElementById('fromEmail')?.value || 'your@email.com', phone: document.getElementById('fromPhone')?.value || '', address: document.getElementById('fromAddress')?.value || '' };
         const to = { name: document.getElementById('toName')?.value || 'Client Name', email: document.getElementById('toEmail')?.value || 'client@email.com', address: document.getElementById('toAddress')?.value || '' };
@@ -239,26 +234,61 @@
         const taxRate = parseFloat(document.getElementById('taxRate')?.value) || 17;
         const taxAmount = subtotal * taxRate / 100;
         const total = subtotal + taxAmount;
-        let html = `<div style="font-family: 'Geist', sans-serif; font-size: 13px;">`;
+
+        let html = `<div style="font-family: 'Inter', sans-serif; font-size: 13px; line-height: 1.5;">`;
+
         if (currentTemplate === 'Letter') {
-            html += `<h2 style="font-weight: bold; font-size: 24px;">INVOICE ${invNum}</h2><div style="display: flex; justify-content: space-between; margin: 16px 0;"><div><strong>From</strong><br>${from.name}<br>${from.email}<br>${from.phone}<br>${from.address}</div><div><strong>To</strong><br>${to.name}<br>${to.email}<br>${to.address}</div></div><table style="width:100%; border-collapse: collapse;"><tbody>${items.map(i => `<tr><td>${i.description||'-'}</td><td style="text-align:right">${i.qty||0}</td><td style="text-align:right">${currency}${(i.rate||0).toFixed(2)}</td><td style="text-align:right">${currency}${((i.qty||0)*(i.rate||0)).toFixed(2)}</td></tr>`).join('')}</tbody></table><div style="text-align:right;">Subtotal: ${currency}${subtotal.toFixed(2)}<br>Tax (${taxRate}%): ${currency}${taxAmount.toFixed(2)}<br><strong>Total: ${currency}${total.toFixed(2)}</strong></div>`;
+            html += `<h2 style="font-weight: bold; font-size: 24px;">INVOICE ${invNum}</h2>`;
+            html += `<div style="display: flex; justify-content: space-between; margin: 16px 0;"><div><strong>From</strong><br>${from.name}<br>${from.email}<br>${from.phone}<br>${from.address}</div><div><strong>To</strong><br>${to.name}<br>${to.email}<br>${to.address}</div></div>`;
+            html += `<table style="width:100%; border-collapse: collapse;">`;
+            items.forEach(i => {
+                if (i.description || i.qty || i.rate) {
+                    html += `<tr><td>${i.description || '-'}</td><td style="text-align:right">${i.qty || 0}</td><td style="text-align:right">${currency}${(i.rate || 0).toFixed(2)}</td><td style="text-align:right">${currency}${((i.qty||0)*(i.rate||0)).toFixed(2)}</td></tr>`;
+                }
+            });
+            html += `</table><div style="text-align:right; margin-top:16px;">Subtotal: ${currency}${subtotal.toFixed(2)}<br>Tax (${taxRate}%): ${currency}${taxAmount.toFixed(2)}<br><strong>Total: ${currency}${total.toFixed(2)}</strong></div>`;
         } else if (currentTemplate === 'Ledger') {
-            html += `<div style="border:1px solid #999; padding:20px;"><h2>Invoice ${invNum}</h2><hr/><div><strong>${from.name}</strong><br>${from.email}</div><hr/><div><strong>${to.name}</strong><br>${to.email}</div><hr/><table style="width:100%;"><tbody>${items.map(i => `<tr><td>${i.description||'-'}</td><td style="text-align:right">${currency}${((i.qty||0)*(i.rate||0)).toFixed(2)}</td></tr>`).join('')}</tbody></table><div style="text-align:right;">Total: ${currency}${total.toFixed(2)}</div></div>`;
-        } else {
-            html += `<div style="border-left:6px solid #0066FF; padding-left:20px;"><h1>INVOICE</h1><p>${invNum}</p></div><div style="display:flex; justify-content:space-between; margin:20px 0;"><div><strong>Bill from</strong><br>${from.name}<br>${from.email}</div><div><strong>Bill to</strong><br>${to.name}<br>${to.email}</div></div><table style="width:100%;"><tbody>${items.map(i => `<tr><td>${i.description||'-'}</td><td style="text-align:right">${currency}${((i.qty||0)*(i.rate||0)).toFixed(2)}</td></tr>`).join('')}</tbody></table><div style="text-align:right; margin-top:20px;"><div style="font-size:22px; font-weight:bold;">${currency}${total.toFixed(2)}</div></div>`;
+            html += `<div style="border:1px solid #999; padding:20px;"><h2>Invoice ${invNum}</h2><hr/><div><strong>${from.name}</strong><br>${from.email}</div><hr/><div><strong>${to.name}</strong><br>${to.email}</div><hr/><table style="width:100%;">`;
+            items.forEach(i => { if (i.description) html += `<tr><td>${i.description}</td><td style="text-align:right">${currency}${((i.qty||0)*(i.rate||0)).toFixed(2)}</td></tr>`; });
+            html += `</table><div style="text-align:right;">Total: ${currency}${total.toFixed(2)}</div></div>`;
+        } else { // Invoice template
+            html += `<div style="border-left:6px solid #0066FF; padding-left:20px;"><h1>INVOICE</h1><p>${invNum}</p></div>`;
+            html += `<div style="display:flex; justify-content:space-between; margin:20px 0;"><div><strong>Bill from</strong><br>${from.name}<br>${from.email}</div><div><strong>Bill to</strong><br>${to.name}<br>${to.email}</div></div>`;
+            html += `<table style="width:100%;">`;
+            items.forEach(i => { if (i.description) html += `<tr><td>${i.description}</td><td style="text-align:right">${currency}${((i.qty||0)*(i.rate||0)).toFixed(2)}</td></tr>`; });
+            html += `</table><div style="text-align:right; margin-top:20px;"><div style="font-size:22px; font-weight:bold;">${currency}${total.toFixed(2)}</div></div>`;
         }
         html += `</div>`;
         document.getElementById('livePreviewContent').innerHTML = html;
     }
 
-    // Event listeners
-    document.getElementById('addItemBtn')?.addEventListener('click', () => { items.push({ id: Date.now(), description: '', qty: 1, rate: 0 }); renderItemsTable(); saveFullInvoice(); updateLivePreview(); });
+    // ---------- EVENT LISTENERS ----------
+    document.getElementById('addItemBtn')?.addEventListener('click', () => {
+        items.push({ id: Date.now(), description: '', qty: 1, rate: 0 });
+        renderItemsTable();
+        saveFullInvoice();
+        updateLivePreview();
+    });
     document.getElementById('currency')?.addEventListener('change', () => { renderItemsTable(); saveFullInvoice(); updateLivePreview(); });
     document.getElementById('taxRate')?.addEventListener('input', () => { calculateTotals(); saveFullInvoice(); updateLivePreview(); });
-    const allInputs = ['#fromName', '#fromEmail', '#fromPhone', '#fromAddress', '#fromWebsite', '#fromTaxId', '#toName', '#toEmail', '#toPhone', '#toAddress', '#toTaxId', '#invNumber', '#issueDate', '#dueTerms', '#currency', '#taxRate', '#discount', '#poNumber', '#paymentInfo', '#status', '#notes'];
+    const allInputs = ['#fromName', '#fromEmail', '#fromPhone', '#fromAddress', '#fromWebsite', '#fromTaxId', '#toName', '#toEmail', '#toPhone', '#toAddress', '#toTaxId', '#invNumber', '#issueDate', '#dueTerms', '#currency', '#taxRate', '#notes'];
     allInputs.forEach(sel => { const el = document.querySelector(sel); if (el) el.addEventListener('input', () => { saveFullInvoice(); updateLivePreview(); }); });
-    document.getElementById('downloadPdfBtn')?.addEventListener('click', () => { const w = window.open('', '_blank'); w.document.write(`<html><head><title>Invoice</title><style>body{font-family:'Geist',sans-serif;padding:2rem;}</style></head><body>${document.getElementById('livePreviewContent').innerHTML}</body></html>`); w.document.close(); w.print(); });
-    document.getElementById('exportForgeBtn')?.addEventListener('click', () => { const inv = { items, from: { name: document.getElementById('fromName')?.value }, to: { name: document.getElementById('toName')?.value }, settings: { invoiceNumber: document.getElementById('invNumber')?.value } }; const data = JSON.stringify(inv, null, 2); const blob = new Blob([data], {type:'application/json'}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `${document.getElementById('invNumber')?.value||'invoice'}.forge`; a.click(); URL.revokeObjectURL(url); });
+    document.getElementById('downloadPdfBtn')?.addEventListener('click', () => {
+        const w = window.open('', '_blank');
+        w.document.write(`<html><head><title>Invoice</title><style>body{font-family:'Inter',sans-serif;padding:2rem;}</style></head><body>${document.getElementById('livePreviewContent').innerHTML}</body></html>`);
+        w.document.close(); w.print();
+    });
+    document.getElementById('exportForgeBtn')?.addEventListener('click', () => {
+        const inv = { items, from: { name: document.getElementById('fromName')?.value }, to: { name: document.getElementById('toName')?.value }, settings: { invoiceNumber: document.getElementById('invNumber')?.value } };
+        const data = JSON.stringify(inv, null, 2);
+        const blob = new Blob([data], {type:'application/json'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${document.getElementById('invNumber')?.value||'invoice'}.forge`;
+        a.click();
+        URL.revokeObjectURL(url);
+    });
 
     // Initialize
     loadSavedData();
