@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InvoiceForge – Create your invoice</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Geist', system-ui, sans-serif; background: #F9FAFB; }
+        .font-mono { font-family: 'Geist Mono', monospace; }
+        .tab-active { border-bottom: 2px solid #0066FF; color: #0066FF; }
+        .tab-btn { cursor: pointer; }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+<!-- Same floating nav, but "New Invoice" becomes active -->
+<header class="fixed top-4 left-1/2 -translate-x-1/2 z-50">
+    <nav class="bg-white/80 backdrop-blur-lg border border-gray-200 rounded-full px-2 py-2 flex items-center gap-1 shadow-sm">
+        <a href="index.html" class="px-4 font-semibold text-gray-900">InvoiceForge</a>
+        <a href="#" class="px-3 py-1.5 text-sm text-gray-500 hover:text-gray-900 rounded-full">Templates</a>
+        <a href="#" class="px-3 py-1.5 text-sm text-gray-500 hover:text-gray-900 rounded-full">Guide</a>
+        <a href="#" class="px-3 py-1.5 text-sm text-gray-500 hover:text-gray-900 rounded-full">GitHub</a>
+        <span class="bg-[#0066FF] text-white px-4 py-1.5 rounded-full text-sm font-medium ml-2">New Invoice</span>
+    </nav>
+</header>
+
+<main class="pt-24 pb-12 px-4 max-w-7xl mx-auto">
+    <div class="grid lg:grid-cols-2 gap-8">
+        <!-- Left: Form -->
+        <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+            <div class="flex border-b border-gray-200 mb-6">
+                <button class="tab-btn px-4 py-2 text-sm font-medium tab-active" data-tab="from">From</button>
+                <button class="tab-btn px-4 py-2 text-sm font-medium text-gray-500" data-tab="to">To</button>
+                <button class="tab-btn px-4 py-2 text-sm font-medium text-gray-500" data-tab="items">Items</button>
+                <button class="tab-btn px-4 py-2 text-sm font-medium text-gray-500" data-tab="settings">Settings</button>
+                <button class="tab-btn px-4 py-2 text-sm font-medium text-gray-500" data-tab="extras">Extras</button>
+            </div>
+
+            <!-- From Tab -->
+            <div id="tab-from" class="tab-pane space-y-4">
+                <div><label class="block text-sm font-medium text-gray-700">Your Name</label><input type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
+                <div><label class="block text-sm font-medium text-gray-700">Email</label><input type="email" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
+                <div><label class="block text-sm font-medium text-gray-700">Phone</label><input type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
+                <div><label class="block text-sm font-medium text-gray-700">Address</label><textarea rows="2" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></textarea></div>
+                <div><label class="block text-sm font-medium text-gray-700">Website</label><input type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
+                <div><label class="block text-sm font-medium text-gray-700">Tax ID (optional)</label><input type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
+                <div><label class="block text-sm font-medium text-gray-700">Logo</label><input type="file" accept="image/*"></div>
+            </div>
+
+            <!-- To Tab (similar) -->
+            <div id="tab-to" class="tab-pane hidden space-y-4">
+                <div><label class="block text-sm font-medium text-gray-700">Client Name</label><input type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
+                <div><label class="block text-sm font-medium text-gray-700">Client Email</label><input type="email" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
+                <div><label class="block text-sm font-medium text-gray-700">Client Phone</label><input type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
+                <div><label class="block text-sm font-medium text-gray-700">Client Address</label><textarea rows="2" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></textarea></div>
+                <div><label class="block text-sm font-medium text-gray-700">Client Tax ID / NTN</label><input type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
+            </div>
+
+            <!-- Items Tab (placeholder) -->
+            <div id="tab-items" class="tab-pane hidden">
+                <p class="text-gray-500 text-center py-8">Items table will be built next (add rows, quantities, amounts).</p>
+            </div>
+
+            <!-- Settings Tab -->
+            <div id="tab-settings" class="tab-pane hidden space-y-4">
+                <div><label class="block text-sm font-medium text-gray-700">Invoice Number</label><input type="text" value="INV-001" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
+                <div><label class="block text-sm font-medium text-gray-700">Issue Date</label><input type="date" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
+                <div><label class="block text-sm font-medium text-gray-700">Due Terms</label><select class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"><option>Net 7</option><option selected>Net 14</option><option>Net 30</option><option>Due on receipt</option></select></div>
+                <div><label class="block text-sm font-medium text-gray-700">Currency</label><select class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"><option>USD ($)</option><option>PKR (Rs)</option><option>EUR (€)</option></select></div>
+                <div><label class="block text-sm font-medium text-gray-700">Tax Rate (%)</label><input type="number" value="17" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
+                <div><label class="block text-sm font-medium text-gray-700">Discount (%)</label><input type="number" value="0" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
+                <div><label class="block text-sm font-medium text-gray-700">PO Number (optional)</label><input type="text" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
+                <div><label class="block text-sm font-medium text-gray-700">Payment Info</label><textarea rows="3" placeholder="Bank: HBL\nIBAN: PK36HABB..." class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></textarea></div>
+                <div><label class="block text-sm font-medium text-gray-700">Status</label><select class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"><option>Draft</option><option>Sent</option><option>Paid</option><option>Overdue</option></select></div>
+                <div><label class="block text-sm font-medium text-gray-700">Notes / Terms</label><textarea rows="2" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></textarea></div>
+            </div>
+
+            <!-- Extras Tab (placeholder) -->
+            <div id="tab-extras" class="tab-pane hidden">
+                <p class="text-gray-500 text-center py-8">Late fee, signature, custom fields will be added later.</p>
+            </div>
+        </div>
+
+        <!-- Right: Preview -->
+        <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-6 sticky top-24">
+            <h2 class="font-semibold text-gray-900 mb-4">Live Preview</h2>
+            <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 min-h-[400px]">
+                <p class="text-gray-500 text-center text-sm">Your invoice preview will appear here as you fill the form.</p>
+            </div>
+            <div class="mt-4 flex gap-3">
+                <button class="flex-1 bg-[#0066FF] text-white py-2 rounded-lg font-medium hover:bg-[#0052CC] transition">Download PDF</button>
+                <button class="flex-1 border border-gray-300 text-gray-700 py-2 rounded-lg font-medium hover:bg-gray-50 transition">Save .forge File</button>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    // Tab switching
+    const tabs = document.querySelectorAll('.tab-btn');
+    const panes = document.querySelectorAll('.tab-pane');
+    tabs.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const tabId = btn.getAttribute('data-tab');
+            tabs.forEach(b => {
+                b.classList.remove('tab-active');
+                b.classList.add('text-gray-500');
+            });
+            btn.classList.add('tab-active');
+            btn.classList.remove('text-gray-500');
+            panes.forEach(pane => pane.classList.add('hidden'));
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+        });
+    });
+</script>
+</body>
+</html>
