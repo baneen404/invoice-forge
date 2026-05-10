@@ -128,21 +128,228 @@
 </main>
 
 <script>
-    // Tab switching
-    const tabs = document.querySelectorAll('.tab-btn');
-    const panes = document.querySelectorAll('.tab-pane');
-    tabs.forEach(btn => {
-        btn.addEventListener('click', () => {
-            const tabId = btn.getAttribute('data-tab');
-            tabs.forEach(b => {
-                b.classList.remove('tab-active');
-                b.classList.add('text-gray-500');
-            });
-            btn.classList.add('tab-active');
-            btn.classList.remove('text-gray-500');
-            panes.forEach(pane => pane.classList.add('hidden'));
-            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+// Tab switching
+const tabs = document.querySelectorAll('.tab-btn');
+const panes = document.querySelectorAll('.tab-pane');
+tabs.forEach(btn => {
+    btn.addEventListener('click', () => {
+        const tabId = btn.getAttribute('data-tab');
+        tabs.forEach(b => {
+            b.classList.remove('tab-active');
+            b.classList.add('text-gray-500');
         });
+        btn.classList.add('tab-active');
+        btn.classList.remove('text-gray-500');
+        panes.forEach(pane => pane.classList.add('hidden'));
+        document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+    });
+});
+
+// ---------- Items Table Logic ----------
+let items = [];
+
+const savedInvoice = localStorage.getItem('invoiceforge_app');
+if (savedInvoice) {
+    const data = JSON.parse(savedInvoice);
+    items = data.items || [{ id: Date.now(), description: '', qty: 1, rate: 0 }];
+} else {
+    items = [{ id: Date.now(), description: '', qty: 1, rate: 0 }];
+}
+
+function saveFullInvoice() {
+    const invoice = {
+        items,
+        from: {
+            name: document.getElementById('fromName')?.value || '',
+            email: document.getElementById('fromEmail')?.value || '',
+            phone: document.getElementById('fromPhone')?.value || '',
+            address: document.getElementById('fromAddress')?.value || '',
+            website: document.getElementById('fromWebsite')?.value || '',
+            taxId: document.getElementById('fromTaxId')?.value || '',
+        },
+        to: {
+            name: document.getElementById('toName')?.value || '',
+            email: document.getElementById('toEmail')?.value || '',
+            phone: document.getElementById('toPhone')?.value || '',
+            address: document.getElementById('toAddress')?.value || '',
+            taxId: document.getElementById('toTaxId')?.value || '',
+        },
+        settings: {
+            invoiceNumber: document.getElementById('invNumber')?.value || 'INV-001',
+            issueDate: document.getElementById('issueDate')?.value || new Date().toISOString().slice(0,10),
+            dueTerms: document.getElementById('dueTerms')?.value || '14',
+            currency: document.getElementById('currency')?.value || 'USD',
+            taxRate: parseFloat(document.getElementById('taxRate')?.value) || 17,
+            discount: parseFloat(document.getElementById('discount')?.value) || 0,
+            poNumber: document.getElementById('poNumber')?.value || '',
+            paymentInfo: document.getElementById('paymentInfo')?.value || '',
+            status: document.getElementById('status')?.value || 'draft',
+            notes: document.getElementById('notes')?.value || '',
+        }
+    };
+    localStorage.setItem('invoiceforge_app', JSON.stringify(invoice));
+}
+
+function renderItemsTable() {
+    const tbody = document.getElementById('items-tbody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    items.forEach((item, idx) => {
+        const row = tbody.insertRow();
+        row.className = 'border-b border-gray-100';
+        const descCell = row.insertCell(0);
+        descCell.className = 'py-2';
+        const descInput = document.createElement('input');
+        descInput.type = 'text';
+        descInput.value = item.description;
+        descInput.placeholder = 'Web design, consulting...';
+        descInput.className = 'w-full bg-transparent border-none focus:ring-0 p-0 text-sm';
+        descInput.addEventListener('input', (e) => {
+            items[idx].description = e.target.value;
+            saveFullInvoice();
+            calculateTotals();
+        });
+        descCell.appendChild(descInput);
+
+        const qtyCell = row.insertCell(1);
+        qtyCell.className = 'text-center py-2';
+        const qtyInput = document.createElement('input');
+        qtyInput.type = 'number';
+        qtyInput.value = item.qty;
+        qtyInput.className = 'w-20 text-center border rounded px-1 py-0.5 text-sm';
+        qtyInput.step = '0.01';
+        qtyInput.min = '0';
+        qtyInput.addEventListener('input', (e) => {
+            items[idx].qty = parseFloat(e.target.value) || 0;
+            saveFullInvoice();
+            calculateTotals();
+        });
+        qtyCell.appendChild(qtyInput);
+
+        const rateCell = row.insertCell(2);
+        rateCell.className = 'text-right py-2';
+        const rateInput = document.createElement('input');
+        rateInput.type = 'number';
+        rateInput.value = item.rate;
+        rateInput.className = 'w-24 text-right border rounded px-1 py-0.5 text-sm';
+        rateInput.step = '0.01';
+        rateInput.min = '0';
+        rateInput.addEventListener('input', (e) => {
+            items[idx].rate = parseFloat(e.target.value) || 0;
+            saveFullInvoice();
+            calculateTotals();
+        });
+        const currencySymbol = getCurrencySymbol();
+        rateCell.innerHTML = `<span class="mr-1">${currencySymbol}</span>`;
+        rateCell.appendChild(rateInput);
+
+        const amountCell = row.insertCell(3);
+        amountCell.className = 'text-right font-mono py-2';
+        const amount = (item.qty * item.rate);
+        amountCell.innerText = `${currencySymbol}${amount.toFixed(2)}`;
+
+        const delCell = row.insertCell(4);
+        delCell.className = 'text-center py-2';
+        const delBtn = document.createElement('button');
+        delBtn.innerHTML = '✕';
+        delBtn.className = 'text-red-500 hover:text-red-700 text-xs';
+        delBtn.addEventListener('click', () => {
+            if (items.length === 1) return;
+            items.splice(idx, 1);
+            renderItemsTable();
+            saveFullInvoice();
+            calculateTotals();
+        });
+        delCell.appendChild(delBtn);
+    });
+    calculateTotals();
+}
+
+function getCurrencySymbol() {
+    const currencySelect = document.getElementById('currency');
+    const map = { USD: '$', PKR: 'Rs', EUR: '€' };
+    return map[currencySelect?.value] || '$';
+}
+
+function calculateTotals() {
+    const subtotal = items.reduce((sum, i) => sum + (i.qty || 0) * (i.rate || 0), 0);
+    const taxRate = parseFloat(document.getElementById('taxRate')?.value) || 17;
+    const taxAmount = subtotal * (taxRate / 100);
+    const total = subtotal + taxAmount;
+    document.getElementById('subtotal').innerText = `${getCurrencySymbol()}${subtotal.toFixed(2)}`;
+    document.getElementById('taxAmount').innerText = `${getCurrencySymbol()}${taxAmount.toFixed(2)}`;
+    document.getElementById('grandTotal').innerText = `${getCurrencySymbol()}${total.toFixed(2)}`;
+    document.getElementById('taxRateDisplay').innerText = taxRate;
+}
+
+document.getElementById('addItemBtn')?.addEventListener('click', () => {
+    items.push({ id: Date.now(), description: '', qty: 1, rate: 0 });
+    renderItemsTable();
+    saveFullInvoice();
+});
+
+document.getElementById('currency')?.addEventListener('change', () => {
+    renderItemsTable();
+    saveFullInvoice();
+});
+
+document.getElementById('taxRate')?.addEventListener('input', () => {
+    calculateTotals();
+    saveFullInvoice();
+});
+
+function attachFieldListeners() {
+    const fields = ['#fromName', '#fromEmail', '#fromPhone', '#fromAddress', '#fromWebsite', '#fromTaxId',
+                    '#toName', '#toEmail', '#toPhone', '#toAddress', '#toTaxId',
+                    '#invNumber', '#issueDate', '#dueTerms', '#currency', '#taxRate', '#discount',
+                    '#poNumber', '#paymentInfo', '#status', '#notes'];
+    fields.forEach(sel => {
+        const el = document.querySelector(sel);
+        if (el) el.addEventListener('input', () => saveFullInvoice());
+    });
+}
+
+function loadSavedData() {
+    const saved = localStorage.getItem('invoiceforge_app');
+    if (!saved) return;
+    const data = JSON.parse(saved);
+    if (data.from) {
+        document.getElementById('fromName').value = data.from.name || '';
+        document.getElementById('fromEmail').value = data.from.email || '';
+        document.getElementById('fromPhone').value = data.from.phone || '';
+        document.getElementById('fromAddress').value = data.from.address || '';
+        document.getElementById('fromWebsite').value = data.from.website || '';
+        document.getElementById('fromTaxId').value = data.from.taxId || '';
+    }
+    if (data.to) {
+        document.getElementById('toName').value = data.to.name || '';
+        document.getElementById('toEmail').value = data.to.email || '';
+        document.getElementById('toPhone').value = data.to.phone || '';
+        document.getElementById('toAddress').value = data.to.address || '';
+        document.getElementById('toTaxId').value = data.to.taxId || '';
+    }
+    if (data.settings) {
+        document.getElementById('invNumber').value = data.settings.invoiceNumber || 'INV-001';
+        document.getElementById('issueDate').value = data.settings.issueDate || new Date().toISOString().slice(0,10);
+        document.getElementById('dueTerms').value = data.settings.dueTerms || '14';
+        document.getElementById('currency').value = data.settings.currency || 'USD';
+        document.getElementById('taxRate').value = data.settings.taxRate || 17;
+        document.getElementById('discount').value = data.settings.discount || 0;
+        document.getElementById('poNumber').value = data.settings.poNumber || '';
+        document.getElementById('paymentInfo').value = data.settings.paymentInfo || '';
+        document.getElementById('status').value = data.settings.status || 'draft';
+        document.getElementById('notes').value = data.settings.notes || '';
+    }
+    if (data.items) {
+        items = data.items;
+        renderItemsTable();
+    }
+}
+
+loadSavedData();
+renderItemsTable();
+attachFieldListeners();
+    });
     });
 </script>
 </body>
