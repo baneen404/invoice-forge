@@ -1,43 +1,45 @@
-// InvoiceForge – Core Data & Storage
+// InvoiceForge – Full logic for tabs, due dates, and invoice data
 
-// Default invoice structure
-const defaultInvoice = {
-    meta: {
-        invoiceNumber: 'INV-001',
-        issueDate: new Date().toISOString().slice(0,10),
-        dueDate: new Date(Date.now() + 14*24*60*60*1000).toISOString().slice(0,10),
-        currency: 'USD',
-        notes: '',
-    },
-    from: {
-        name: 'Your Name',
-        email: 'you@example.com',
-        address: '123 Business St, City',
-        taxId: '',
-    },
-    to: {
-        name: 'Client Name',
-        email: 'client@example.com',
-        address: '456 Client Ave, City',
-    },
-    items: [
-        { id: '1', description: 'Web development', quantity: 1, rate: 500, taxable: true },
-    ],
-    tax: { rate: 17, label: 'VAT' },
-    discount: { type: 'percent', value: 0 },
-};
+// ---------- DOM Elements ----------
+const tabs = document.querySelectorAll('.tab-btn');
+const contents = document.querySelectorAll('.tab-content');
+const dueTerms = document.getElementById('dueTerms');
+const customDateGroup = document.getElementById('customDateGroup');
+const customDueDate = document.getElementById('customDueDate');
+const issueDateInput = document.getElementById('issueDate');
 
-// Load or initialize invoice data
-let invoice = JSON.parse(localStorage.getItem('invoiceforge')) || defaultInvoice;
+// ---------- Tab Switching ----------
+tabs.forEach(btn => {
+    btn.addEventListener('click', () => {
+        const tabId = btn.getAttribute('data-tab');
+        tabs.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        contents.forEach(c => c.classList.remove('active'));
+        document.getElementById(`tab-${tabId}`).classList.add('active');
+    });
+});
 
-// Save to localStorage every time invoice changes
-function saveInvoice() {
-    localStorage.setItem('invoiceforge', JSON.stringify(invoice));
+// ---------- Due Date Logic ----------
+function updateDueDate() {
+    if (dueTerms.value === 'custom') {
+        customDateGroup.style.display = 'block';
+    } else {
+        customDateGroup.style.display = 'none';
+        if (issueDateInput.value && dueTerms.value !== 'custom') {
+            const issue = new Date(issueDateInput.value);
+            const days = parseInt(dueTerms.value);
+            const due = new Date(issue);
+            due.setDate(issue.getDate() + days);
+            customDueDate.value = due.toISOString().slice(0,10);
+        }
+    }
 }
+dueTerms.addEventListener('change', updateDueDate);
+issueDateInput.addEventListener('change', updateDueDate);
 
-// Initial save if localStorage was empty
-if (!localStorage.getItem('invoiceforge')) {
-    saveInvoice();
-}
+// Set today's date as default
+issueDateInput.value = new Date().toISOString().slice(0,10);
+updateDueDate();
 
-console.log('InvoiceForge ready', invoice);
+// ---------- Load/Save Invoice Data (to be expanded) ----------
+console.log('InvoiceForge tabs and due date logic ready');

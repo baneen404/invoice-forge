@@ -72,9 +72,74 @@
 </div>
 <div class="main">
     <div class="sidebar">
-        <h2 style="margin-bottom: 1rem;">Invoice Details</h2>
-        <p class="placeholder">Form fields will go here (From, To, Items, Settings)</p>
+    <div style="display: flex; gap: 0.5rem; border-bottom: 1px solid var(--border); margin-bottom: 1rem;">
+        <button class="tab-btn active" data-tab="from">From</button>
+        <button class="tab-btn" data-tab="to">To</button>
+        <button class="tab-btn" data-tab="items">Items</button>
+        <button class="tab-btn" data-tab="settings">Settings</button>
     </div>
+
+    <!-- From Tab -->
+    <div id="tab-from" class="tab-content active">
+        <div class="form-group"><label>Your Name</label><input type="text" id="fromName" placeholder="Acme Inc."></div>
+        <div class="form-group"><label>Email</label><input type="email" id="fromEmail" placeholder="you@example.com"></div>
+        <div class="form-group"><label>Phone</label><input type="text" id="fromPhone" placeholder="+92 300 1234567"></div>
+        <div class="form-group"><label>Address</label><textarea id="fromAddress" rows="2" placeholder="Street, City, Country"></textarea></div>
+        <div class="form-group"><label>Website</label><input type="text" id="fromWebsite" placeholder="https://yourwebsite.com"></div>
+        <div class="form-group"><label>Tax ID (optional)</label><input type="text" id="fromTaxId" placeholder="NTN / VAT number"></div>
+        <div class="form-group"><label>Logo (optional)</label><input type="file" id="logoUpload" accept="image/*"></div>
+    </div>
+
+    <!-- To Tab -->
+    <div id="tab-to" class="tab-content">
+        <div class="form-group"><label>Client Name</label><input type="text" id="toName" placeholder="Client Name"></div>
+        <div class="form-group"><label>Client Email</label><input type="email" id="toEmail" placeholder="client@example.com"></div>
+        <div class="form-group"><label>Client Phone</label><input type="text" id="toPhone" placeholder="+92 300 1234567"></div>
+        <div class="form-group"><label>Client Address</label><textarea id="toAddress" rows="2" placeholder="Street, City, Country"></textarea></div>
+        <div class="form-group"><label>Client Tax ID / NTN (optional)</label><input type="text" id="toTaxId" placeholder="For corporate invoices"></div>
+    </div>
+
+    <!-- Items Tab (placeholder – we'll fill later) -->
+    <div id="tab-items" class="tab-content">
+        <p class="placeholder">Line items table will go here.</p>
+    </div>
+
+    <!-- Settings Tab with all new fields -->
+    <div id="tab-settings" class="tab-content">
+        <div class="form-group"><label>Invoice Number</label><input type="text" id="invNumber" placeholder="INV-001"></div>
+        <div class="form-group"><label>Issue Date</label><input type="date" id="issueDate"></div>
+        <div class="form-group"><label>Due Terms</label>
+            <select id="dueTerms">
+                <option value="0">Due on receipt</option>
+                <option value="7">Net 7</option>
+                <option value="14" selected>Net 14</option>
+                <option value="30">Net 30</option>
+                <option value="custom">Custom date</option>
+            </select>
+        </div>
+        <div class="form-group" id="customDateGroup" style="display:none;"><label>Custom Due Date</label><input type="date" id="customDueDate"></div>
+        <div class="form-group"><label>Currency</label>
+            <select id="currency">
+                <option value="USD">USD ($)</option>
+                <option value="PKR">PKR (Rs)</option>
+                <option value="EUR">EUR (€)</option>
+            </select>
+        </div>
+        <div class="form-group"><label>Tax Rate (%)</label><input type="number" id="taxRate" step="0.1" value="17"></div>
+        <div class="form-group"><label>Discount (%)</label><input type="number" id="discount" step="1" value="0"></div>
+        <div class="form-group"><label>PO Number (optional)</label><input type="text" id="poNumber" placeholder="Client Purchase Order #"></div>
+        <div class="form-group"><label>Payment Info (bank details, JazzCash, etc.)</label><textarea id="paymentInfo" rows="3" placeholder="Bank: HBL\nIBAN: PK36HABB...\nJazzCash: 03xx-xxxxxxx"></textarea></div>
+        <div class="form-group"><label>Status</label>
+            <select id="status">
+                <option value="draft">Draft</option>
+                <option value="sent">Sent</option>
+                <option value="paid">Paid</option>
+                <option value="overdue">Overdue</option>
+            </select>
+        </div>
+        <div class="form-group"><label>Notes / Terms</label><textarea id="notes" rows="2" placeholder="Thank you for your business!"></textarea></div>
+    </div>
+</div>
     <div class="preview-area">
         <div class="invoice-preview">
             <p class="placeholder">Live invoice preview will appear here</p>

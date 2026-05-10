@@ -129,3 +129,23 @@ input:focus, textarea:focus {
         max-height: 50vh;
     }
 }
+/* Tabs */
+.tab-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+.tab-btn.active {
+    color: var(--brand);
+    border-bottom: 2px solid var(--brand);
+}
+.tab-content {
+    display: none;
+}
+.tab-content.active {
+    display: block;
+}
