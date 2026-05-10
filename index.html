@@ -5,18 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>InvoiceForge – Free invoice generator, no signup</title>
     <meta name="description" content="Create tax-compliant invoices in under a minute. Real PDF text for QuickBooks. Your data never leaves the browser.">
-    <!-- Tailwind CSS + Geist Font -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Geist', system-ui, sans-serif; }
+        body {
+            font-family: 'Geist', system-ui, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
         .font-mono { font-family: 'Geist Mono', monospace; }
     </style>
 </head>
 <body class="bg-white text-gray-900">
 
-<!-- Floating pill nav -->
-<header class="fixed top-4 left-1/2 -translate-x-1/2 z-50">
+<!-- Floating pill nav with glassmorphism -->
+<header class="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-auto">
     <nav class="bg-white/80 backdrop-blur-lg border border-gray-200 rounded-full px-2 py-2 flex items-center gap-1 shadow-sm">
         <div class="px-4 font-semibold text-gray-900">InvoiceForge</div>
         <a href="#templates" class="px-3 py-1.5 text-sm text-gray-500 hover:text-gray-900 rounded-full">Templates</a>
@@ -28,20 +31,29 @@
 
 <main>
     <!-- Hero section -->
-    <section class="pt-40 pb-20 text-center max-w-3xl mx-auto px-6">
+    <section class="pt-40 pb-12 text-center max-w-3xl mx-auto px-6">
         <div class="inline-flex items-center gap-2 bg-blue-50 text-[#0066FF] text-xs font-medium px-3 py-1 rounded-full mb-6">
             <span>🔒</span> No signup. No tracking. No BS.
         </div>
-        <h1 class="text-5xl md:text-6xl font-bold tracking-tight text-gray-900">
+        <h1 class="text-5xl md:text-6xl font-extrabold tracking-tight text-gray-900">
             The invoice generator for people who hate invoicing
         </h1>
         <p class="text-lg text-gray-500 mt-6 max-w-xl mx-auto">
-            Create tax-compliant invoices in under a minute. Real PDF text for QuickBooks.
+            Create tax‑compliant invoices in under a minute. Real PDF text for QuickBooks.
             Works offline. Your data never leaves the browser.
         </p>
-        <div class="flex items-center justify-center gap-3 mt-8">
-            <a href="app.html" class="bg-[#0066FF] text-white px-6 py-3 rounded-lg font-medium hover:bg-[#0052CC] transition">Create Invoice — It's Free</a>
-            <button id="demoScroll" class="text-gray-500 text-sm">See 30-sec demo ↓</button>
+        <div class="flex flex-col items-center justify-center gap-4 mt-8">
+            <div class="flex gap-3">
+                <a href="app.html" class="bg-[#0066FF] text-white px-6 py-3 rounded-lg font-medium hover:bg-[#0052CC] transition">Create Invoice — It's Free</a>
+                <button id="demoScroll" class="text-gray-500 text-sm">See 30‑sec demo ↓</button>
+            </div>
+            <!-- Social proof logos (trusted by freelancers on platforms) -->
+            <div class="mt-12 flex items-center justify-center gap-6 text-gray-400 text-xs">
+                <span class="font-medium">TRUSTED BY FREELANCERS ON</span>
+                <span class="text-base font-semibold text-gray-500">Upwork</span>
+                <span class="text-base font-semibold text-gray-500">Fiverr</span>
+                <span class="text-base font-semibold text-gray-500">Toptal</span>
+            </div>
         </div>
     </section>
 
@@ -86,45 +98,45 @@
         <p class="text-center text-sm text-gray-400 mt-4">Try it above. Everything runs in your browser. ↓</p>
     </section>
 
-    <!-- Features grid -->
+    <!-- Features grid (3x2) -->
     <section class="max-w-5xl mx-auto px-6 py-24">
         <h2 class="text-3xl font-semibold text-center mb-12">Everything you need. Nothing you don't.</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <div class="p-5 border border-gray-100 rounded-xl bg-white shadow-sm">
                 <div class="text-[#0066FF] mb-3">📄</div>
-                <h3 class="font-semibold">Text PDFs, Not Images</h3>
+                <h3 class="font-semibold mt-1">Text PDFs, Not Images</h3>
                 <p class="text-sm text-gray-500 mt-1">Exports real text PDFs. Imports into QuickBooks, Xero, Zoho without OCR errors.</p>
             </div>
             <div class="p-5 border border-gray-100 rounded-xl bg-white shadow-sm">
                 <div class="text-[#0066FF] mb-3">🏦</div>
-                <h3 class="font-semibold">Tax & NTN Ready</h3>
+                <h3 class="font-semibold mt-1">Tax & NTN Ready</h3>
                 <p class="text-sm text-gray-500 mt-1">VAT, GST, NTN fields built-in. Compliant with PK, EU, US invoice laws.</p>
             </div>
             <div class="p-5 border border-gray-100 rounded-xl bg-white shadow-sm">
                 <div class="text-[#0066FF] mb-3">🔒</div>
-                <h3 class="font-semibold">100% Private</h3>
+                <h3 class="font-semibold mt-1">100% Private</h3>
                 <p class="text-sm text-gray-500 mt-1">No accounts. No servers. Your client data never touches our servers because we have none.</p>
             </div>
             <div class="p-5 border border-gray-100 rounded-xl bg-white shadow-sm">
                 <div class="text-[#0066FF] mb-3">💾</div>
-                <h3 class="font-semibold">Save & Reuse</h3>
+                <h3 class="font-semibold mt-1">Save & Reuse</h3>
                 <p class="text-sm text-gray-500 mt-1">Export .forge files. Re-import clients and line items. Never type twice.</p>
             </div>
             <div class="p-5 border border-gray-100 rounded-xl bg-white shadow-sm">
                 <div class="text-[#0066FF] mb-3">🖨️</div>
-                <h3 class="font-semibold">Status Tracking</h3>
+                <h3 class="font-semibold mt-1">Status Tracking</h3>
                 <p class="text-sm text-gray-500 mt-1">Mark as Sent, Paid, Overdue. PDF auto-stamps. Know where your money is.</p>
             </div>
             <div class="p-5 border border-gray-100 rounded-xl bg-white shadow-sm">
                 <div class="text-[#0066FF] mb-3">📱</div>
-                <h3 class="font-semibold">Works Offline</h3>
-                <p class="text-sm text-gray-500 mt-1">PWA support. Invoice on a plane. No internet needed after first load.</p>
+                <h3 class="font-semibold mt-1">Works Offline</h3>
+                <p class="text-sm text-gray-500 mt-1">PWA support (iOS + Android). Invoice on a plane. No internet needed after first load.</p>
             </div>
         </div>
     </section>
 
     <!-- Comparison table -->
-    <section class="max-w-4xl mx-auto px-6 py-24">
+    <section class="max-w-4xl mx-auto px-6 py-24 pt-32">
         <h2 class="text-3xl font-semibold text-center mb-12">Why not Word or Canva?</h2>
         <div class="overflow-x-auto">
             <table class="w-full text-sm text-left">
@@ -132,15 +144,16 @@
                     <tr><th class="p-3"></th><th class="p-3">Word/Excel</th><th class="p-3">Canva</th><th class="p-3 text-[#0066FF]">InvoiceForge</th></tr>
                 </thead>
                 <tbody>
-                    <tr class="border-b"><td class="p-3">PDF Type</td><td>Text ✓</td><td>Image ✗</td><td class="font-semibold">Text ✓</td></tr>
-                    <tr class="border-b"><td class="p-3">Auto-Calculation</td><td>Manual ✗</td><td>Manual ✗</td><td class="font-semibold">Auto ✓</td></tr>
-                    <tr class="border-b"><td class="p-3">Templates</td><td>Ugly ✗</td><td>Pretty ✓</td><td class="font-semibold">Pro ✓</td></tr>
-                    <tr class="border-b"><td class="p-3">Privacy</td><td>Local ✓</td><td>Uploads ✗</td><td class="font-semibold">Local ✓</td></tr>
-                    <tr><td class="p-3">Price</td><td>Free ✓</td><td>Freemium ✗</td><td class="font-semibold">Free ✓</td></tr>
+                    <tr class="border-b"><td class="p-3">PDF Type</td><td class="p-3">Text ✓*</td><td class="p-3">Image ✗</td><td class="font-semibold">Text ✓</td></tr>
+                    <tr class="border-b"><td class="p-3">Auto-Calculation</td><td class="p-3">Manual ✗</td><td class="p-3">Manual ✗</td><td class="font-semibold">Auto ✓</td></tr>
+                    <tr class="border-b"><td class="p-3">Templates</td><td class="p-3">Ugly ✗</td><td class="p-3">Pretty ✓</td><td class="font-semibold">Pro ✓</td></tr>
+                    <tr class="border-b"><td class="p-3">Privacy</td><td class="p-3">Local ✓</td><td class="p-3">Uploads ✗</td><td class="font-semibold">Local ✓</td></tr>
+                    <tr class="border-b"><td class="p-3">Price</td><td class="p-3">Free ✓</td><td class="p-3">Premium ✗</td><td class="font-semibold">Free ✓</td></tr>
                 </tbody>
             </table>
         </div>
-        <p class="text-center text-sm text-gray-400 mt-6">If you use Canva for invoices, your accountant hates you.</p>
+        <p class="text-center text-sm text-gray-400 mt-6">* Word exports text only when "Save as PDF" – not "Print to PDF".</p>
+        <p class="text-center text-sm text-gray-500 mt-2">If you use Canva for invoices, your accountant hates you.</p>
     </section>
 
     <!-- Footer -->
