@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>InvoiceForge – Professional Invoice Builder</title>
+    <title>InvoiceForge – Pro Invoice Builder</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
@@ -17,6 +17,9 @@
             transition: all 0.2s;
             position: relative;
             overflow-x: auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
         .invoice-table {
             width: 100%;
@@ -56,6 +59,26 @@
                 gap: 20px;
             }
         }
+        .logo-placeholder {
+            width: 40px;
+            height: 40px;
+            background: #0066FF;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .footer-signature {
+            margin-top: 32px;
+            padding-top: 16px;
+            border-top: 1px solid #E5E7EB;
+            font-size: 12px;
+            color: #6B7280;
+            text-align: center;
+        }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -91,7 +114,7 @@
                     <div><label class="block text-sm font-medium text-gray-700">Phone</label><input type="text" id="fromPhone" placeholder="+92 300 1234567" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
                     <div><label class="block text-sm font-medium text-gray-700">Address</label><textarea id="fromAddress" rows="2" placeholder="Street, City, Country" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></textarea></div>
                     <div><label class="block text-sm font-medium text-gray-700">Website</label><input type="text" id="fromWebsite" placeholder="https://yourwebsite.com" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
-                    <div><label class="block text-sm font-medium text-gray-700">Tax ID / NTN</label><input type="text" id="fromTaxId" placeholder="NTN number" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
+                    <div><label class="block text-sm font-medium text-gray-700">Tax ID / NTN / STRN</label><input type="text" id="fromTaxId" placeholder="e.g., STRN: 1234567-8" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
                 </div>
 
                 <!-- To Tab -->
@@ -100,16 +123,24 @@
                     <div><label class="block text-sm font-medium text-gray-700">Client Email</label><input type="email" id="toEmail" placeholder="billing@acme.com" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
                     <div><label class="block text-sm font-medium text-gray-700">Client Phone</label><input type="text" id="toPhone" placeholder="+92 321 7654321" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
                     <div><label class="block text-sm font-medium text-gray-700">Client Address</label><textarea id="toAddress" rows="2" placeholder="Client office address" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></textarea></div>
-                    <div><label class="block text-sm font-medium text-gray-700">Client Tax ID / NTN</label><input type="text" id="toTaxId" placeholder="Client NTN (optional)" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
+                    <div><label class="block text-sm font-medium text-gray-700">Client PO Number</label><input type="text" id="poNumber" placeholder="e.g., ACME-DEV-2026-05" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
                 </div>
 
-                <!-- Items Tab -->
+                <!-- Items Tab (realistic dev line items) -->
                 <div id="tab-items" class="tab-pane hidden">
                     <div class="overflow-x-auto">
                         <table class="w-full text-sm">
-                            <thead class="border-b border-gray-200"><tr class="text-left text-gray-500"><th class="pb-2">Description</th><th class="pb-2 w-20 text-right">Qty</th><th class="pb-2 w-28 text-right">Rate</th><th class="pb-2 w-28 text-right">Amount</th><th class="pb-2 w-8"></th> </tr></thead>
+                            <thead class="border-b border-gray-200">
+                                <tr class="text-left text-gray-500">
+                                    <th class="pb-2">Item / Details</th>
+                                    <th class="pb-2 w-20 text-right">Qty</th>
+                                    <th class="pb-2 w-28 text-right">Rate</th>
+                                    <th class="pb-2 w-28 text-right">Amount</th>
+                                    <th class="pb-2 w-8"></th>
+                                 </tr>
+                            </thead>
                             <tbody id="items-tbody"></tbody>
-                        </table>
+                         </table>
                     </div>
                     <button id="addItemBtn" class="mt-3 text-sm text-[#0066FF] hover:text-[#0052CC] flex items-center gap-1">+ Add line item</button>
                     <div class="mt-6 border-t pt-4 space-y-2 text-right">
@@ -119,22 +150,21 @@
                     </div>
                 </div>
 
-                <!-- Settings Tab -->
+                <!-- Settings Tab (global payment info, legal fields) -->
                 <div id="tab-settings" class="tab-pane hidden space-y-4">
                     <div><label class="block text-sm font-medium text-gray-700">Invoice Number</label><input type="text" id="invNumber" value="INV-001" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
-                    <div><label class="block text-sm font-medium text-gray-700">Issue Date</label><input type="date" id="issueDate" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
-                    <div><label class="block text-sm font-medium text-gray-700">Due Terms</label><select id="dueTerms" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"><option>Net 7</option><option selected>Net 14</option><option>Net 30</option><option>Due on receipt</option></select></div>
+                    <div><label class="block text-sm font-medium text-gray-700">Invoice Date</label><input type="date" id="issueDate" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
+                    <div><label class="block text-sm font-medium text-gray-700">Due Terms (Net days)</label><select id="dueTerms" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"><option>Net 7</option><option selected>Net 14</option><option>Net 30</option><option>Due on receipt</option></select></div>
                     <div><label class="block text-sm font-medium text-gray-700">Currency</label><select id="currency" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"><option value="PKR">PKR (₨)</option><option value="USD">USD ($)</option><option value="EUR">EUR (€)</option></select></div>
                     <div><label class="block text-sm font-medium text-gray-700">GST / VAT (%)</label><input type="number" id="taxRate" value="17" step="0.1" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"><p class="text-xs text-gray-500 mt-1">Pakistan: 17% GST. UAE: 5% VAT. Set 0 if exempt.</p></div>
                     <div><label class="block text-sm font-medium text-gray-700">Discount (%)</label><input type="number" id="discount" value="0" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
-                    <div><label class="block text-sm font-medium text-gray-700">PO Number</label><input type="text" id="poNumber" placeholder="Client PO #" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
-                    <div><label class="block text-sm font-medium text-gray-700">Payment Info</label><textarea id="paymentInfo" rows="3" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></textarea></div>
+                    <div><label class="block text-sm font-medium text-gray-700">Payment Info<br><span class="text-xs text-gray-500">Bank, PayPal, Wise, crypto, etc.</span></label><textarea id="paymentInfo" rows="3" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></textarea></div>
                     <div><label class="block text-sm font-medium text-gray-700">Mark as Paid</label><div class="flex items-center gap-2 mt-1"><input type="checkbox" id="isPaidCheckbox" class="w-4 h-4 text-[#0066FF]"><label class="text-sm text-gray-600">(Shows PAID date & method on invoice)</label></div></div>
                     <div id="paidDetails" style="display: none;" class="ml-6 space-y-2">
                         <div><label class="block text-sm font-medium text-gray-700">Paid Date</label><input type="date" id="paidDate" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
-                        <div><label class="block text-sm font-medium text-gray-700">Payment Method</label><select id="paidMethod" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"><option>Bank Transfer</option><option>JazzCash</option><option>Easypaisa</option><option>Cash</option><option>Other</option></select></div>
+                        <div><label class="block text-sm font-medium text-gray-700">Payment Method</label><select id="paidMethod" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"><option>Bank Transfer</option><option>PayPal</option><option>Wise</option><option>Credit Card</option><option>Cryptocurrency</option><option>Other</option></select></div>
                     </div>
-                    <div><label class="block text-sm font-medium text-gray-700">Notes</label><textarea id="notes" rows="2" placeholder="Thank you for your business!" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></textarea></div>
+                    <div><label class="block text-sm font-medium text-gray-700">Notes / Terms</label><textarea id="notes" rows="2" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">Net 14 days. Late fee 2% monthly on overdue balances. Code/assets transferred upon full payment. Source files not included unless specified.</textarea></div>
                 </div>
             </div>
         </div>
@@ -163,7 +193,7 @@
         });
     });
 
-    // ---------- ITEMS DATA ----------
+    // ---------- ITEMS DATA (realistic dev line items) ----------
     let items = [];
 
     function getCurrencySymbol() {
@@ -190,8 +220,8 @@
         tbody.innerHTML = '';
         if (items.length === 0) {
             items = [
-                { id: Date.now(), description: 'Sample Service', qty: 1, rate: 100 },
-                { id: Date.now()+1, description: 'Consulting', qty: 2, rate: 75 }
+                { id: Date.now(), description: 'API Integration: Stripe Webhooks + Error Handling', qty: 1, rate: 100 },
+                { id: Date.now()+1, description: 'Code Review & Refactor: Auth Module | 2 hours', qty: 2, rate: 75 }
             ];
         }
         items.forEach((item, idx) => {
@@ -200,7 +230,7 @@
             const descCell = row.insertCell(0); descCell.className = 'py-2';
             const descInput = document.createElement('input');
             descInput.type = 'text'; descInput.value = item.description || '';
-            descInput.placeholder = 'Service description';
+            descInput.placeholder = 'Describe the work (e.g., React component, API endpoint)';
             descInput.className = 'w-full bg-transparent border-none p-0 text-sm';
             descInput.addEventListener('input', (e) => { items[idx].description = e.target.value; saveFullInvoice(); calculateTotals(); updateLivePreview(); });
             descCell.appendChild(descInput);
@@ -244,11 +274,11 @@
             textarea.placeholder = `Bank: HBL\nIBAN: PK36HABB...\nJazzCash: 03xx-xxxxxxx\nEasypaisa: 03xx-xxxxxxx`;
             if (!textarea.value) textarea.value = `Bank: HBL\nIBAN: PK36HABB...\nJazzCash: 03xx-xxxxxxx\nEasypaisa: 03xx-xxxxxxx`;
         } else if (currency === 'USD') {
-            textarea.placeholder = `Bank: Chase\nRouting: 021000021\nAccount: 123456789\nPayPal: you@email.com`;
-            if (!textarea.value || textarea.value.includes('HBL')) textarea.value = `Bank: Chase\nRouting: 021000021\nAccount: 123456789\nPayPal: you@email.com`;
+            textarea.placeholder = `Bank: Chase\nRouting: 021000021\nAccount: 123456789\nPayPal: you@email.com\nWise: you@wise.com`;
+            if (!textarea.value || textarea.value.includes('HBL')) textarea.value = `Bank: Chase\nRouting: 021000021\nAccount: 123456789\nPayPal: you@email.com\nWise: you@wise.com`;
         } else if (currency === 'EUR') {
-            textarea.placeholder = `Bank: Deutsche Bank\nIBAN: DE89 3704 0044 0532 0130 00\nBIC: DEUTDEDB`;
-            if (!textarea.value || textarea.value.includes('HBL')) textarea.value = `Bank: Deutsche Bank\nIBAN: DE89 3704 0044 0532 0130 00\nBIC: DEUTDEDB`;
+            textarea.placeholder = `Bank: Deutsche Bank\nIBAN: DE89 3704 0044 0532 0130 00\nBIC: DEUTDEDB\nPayPal: you@email.com`;
+            if (!textarea.value || textarea.value.includes('HBL')) textarea.value = `Bank: Deutsche Bank\nIBAN: DE89 3704 0044 0532 0130 00\nBIC: DEUTDEDB\nPayPal: you@email.com`;
         }
     }
 
@@ -256,8 +286,8 @@
         const invoice = {
             items,
             from: { name: document.getElementById('fromName')?.value || 'Ali Raza', email: document.getElementById('fromEmail')?.value || 'ali@studio.com', phone: document.getElementById('fromPhone')?.value || '', address: document.getElementById('fromAddress')?.value || '', website: document.getElementById('fromWebsite')?.value || '', taxId: document.getElementById('fromTaxId')?.value || '' },
-            to: { name: document.getElementById('toName')?.value || 'Acme Corp', email: document.getElementById('toEmail')?.value || 'billing@acme.com', phone: document.getElementById('toPhone')?.value || '', address: document.getElementById('toAddress')?.value || '', taxId: document.getElementById('toTaxId')?.value || '' },
-            settings: { invoiceNumber: document.getElementById('invNumber')?.value || 'INV-001', issueDate: document.getElementById('issueDate')?.value, dueTerms: document.getElementById('dueTerms')?.value, currency: document.getElementById('currency')?.value, taxRate: document.getElementById('taxRate')?.value, discount: document.getElementById('discount')?.value, poNumber: document.getElementById('poNumber')?.value, paymentInfo: document.getElementById('paymentInfo')?.value, isPaid: document.getElementById('isPaidCheckbox')?.checked, paidDate: document.getElementById('paidDate')?.value, paidMethod: document.getElementById('paidMethod')?.value, notes: document.getElementById('notes')?.value }
+            to: { name: document.getElementById('toName')?.value || 'Acme Corp', email: document.getElementById('toEmail')?.value || 'billing@acme.com', phone: document.getElementById('toPhone')?.value || '', address: document.getElementById('toAddress')?.value || '', poNumber: document.getElementById('poNumber')?.value || '' },
+            settings: { invoiceNumber: document.getElementById('invNumber')?.value || 'INV-001', issueDate: document.getElementById('issueDate')?.value, dueTerms: document.getElementById('dueTerms')?.value, currency: document.getElementById('currency')?.value, taxRate: document.getElementById('taxRate')?.value, discount: document.getElementById('discount')?.value, paymentInfo: document.getElementById('paymentInfo')?.value, isPaid: document.getElementById('isPaidCheckbox')?.checked, paidDate: document.getElementById('paidDate')?.value, paidMethod: document.getElementById('paidMethod')?.value, notes: document.getElementById('notes')?.value }
         };
         localStorage.setItem('invoiceforge_app', JSON.stringify(invoice));
     }
@@ -271,7 +301,11 @@
             for (let k in data.from) { let el = document.getElementById(`from${k.charAt(0).toUpperCase()}${k.slice(1)}`); if (el) el.value = data.from[k]; }
         }
         if (data.to) {
-            for (let k in data.to) { let el = document.getElementById(`to${k.charAt(0).toUpperCase()}${k.slice(1)}`); if (el) el.value = data.to[k]; }
+            document.getElementById('toName').value = data.to.name || '';
+            document.getElementById('toEmail').value = data.to.email || '';
+            document.getElementById('toPhone').value = data.to.phone || '';
+            document.getElementById('toAddress').value = data.to.address || '';
+            document.getElementById('poNumber').value = data.to.poNumber || '';
         }
         if (data.settings) {
             for (let k in data.settings) {
@@ -289,8 +323,8 @@
 
     // ---------- LIVE PREVIEW ----------
     function updateLivePreview() {
-        const from = { name: document.getElementById('fromName')?.value || 'Ali Raza', email: document.getElementById('fromEmail')?.value || 'ali@studio.com', phone: document.getElementById('fromPhone')?.value || '', address: document.getElementById('fromAddress')?.value || '' };
-        const to = { name: document.getElementById('toName')?.value || 'Acme Corp', email: document.getElementById('toEmail')?.value || 'billing@acme.com', address: document.getElementById('toAddress')?.value || '' };
+        const from = { name: document.getElementById('fromName')?.value || 'Ali Raza', email: document.getElementById('fromEmail')?.value || 'ali@studio.com', phone: document.getElementById('fromPhone')?.value || '', address: document.getElementById('fromAddress')?.value || '', taxId: document.getElementById('fromTaxId')?.value || '' };
+        const to = { name: document.getElementById('toName')?.value || 'Acme Corp', email: document.getElementById('toEmail')?.value || 'billing@acme.com', address: document.getElementById('toAddress')?.value || '', poNumber: document.getElementById('poNumber')?.value || '' };
         const invNum = document.getElementById('invNumber')?.value || 'INV-001';
         const currencySymbol = getCurrencySymbol();
         const subtotal = items.reduce((sum, i) => sum + (i.qty || 0) * (i.rate || 0), 0);
@@ -300,55 +334,87 @@
         const taxRate = parseFloat(document.getElementById('taxRate')?.value) || 0;
         const taxAmount = afterDiscount * taxRate / 100;
         const total = afterDiscount + taxAmount;
-        const issueDate = document.getElementById('issueDate')?.value;
+
+        const issueDateRaw = document.getElementById('issueDate')?.value;
+        let invoiceDate = '';
         let dueDate = '';
-        if (issueDate) {
+        if (issueDateRaw) {
+            const dateObj = new Date(issueDateRaw);
+            invoiceDate = dateObj.toLocaleDateString('en-PK', { year: 'numeric', month: 'long', day: 'numeric' });
             const days = parseInt(document.getElementById('dueTerms')?.value) || 14;
-            const due = new Date(issueDate);
-            due.setDate(due.getDate() + days);
-            dueDate = due.toLocaleDateString('en-PK');
+            const dueObj = new Date(dateObj);
+            dueObj.setDate(dateObj.getDate() + days);
+            dueDate = dueObj.toLocaleDateString('en-PK', { year: 'numeric', month: 'long', day: 'numeric' });
+        } else {
+            invoiceDate = 'Not set';
         }
+
         const isPaid = document.getElementById('isPaidCheckbox')?.checked || false;
         const paidDate = document.getElementById('paidDate')?.value;
         const paidMethod = document.getElementById('paidMethod')?.value;
-        const notes = document.getElementById('notes')?.value || 'Thank you for your business!';
+        const notes = document.getElementById('notes')?.value || 'Net 14 days. Late fee 2% monthly.';
         const paymentInfo = document.getElementById('paymentInfo')?.value || '';
 
-        let inner = `<div style="font-family: 'Inter', sans-serif;">
-            <div style="border-left: 6px solid #0066FF; padding-left: 20px; margin-bottom: 24px;">
-                <h1 style="font-size: 32px; margin: 0;">INVOICE</h1>
-                <p style="color: #6B7280;">${invNum}</p>
-            </div>
-            <div style="display: flex; justify-content: space-between; margin-bottom: 24px;">
-                <div><strong>From</strong><br>${from.name}<br>${from.email}<br>${from.phone}<br>${from.address}</div>
-                <div><strong>To</strong><br>${to.name}<br>${to.email}<br>${to.address}</div>
-            </div>
-            <table style="width: 100%; border-collapse: collapse;">
-                <thead><tr style="background:#F3F4F6;"><th style="text-align:left;padding:8px;">Item</th><th style="text-align:right;padding:8px;">Qty</th><th style="text-align:right;padding:8px;">Rate</th><th style="text-align:right;padding:8px;">Amount</th> </tr></thead>
-                <tbody>`;
+        let inner = `
+            <div style="font-family: 'Inter', sans-serif;">
+                <!-- Logo + Invoice header -->
+                <div style="display: flex; justify-content: space-between; margin-bottom: 24px;">
+                    <div class="logo-placeholder">AR</div>
+                    <div style="text-align: right;">
+                        <h1 style="font-size: 32px; margin: 0;">INVOICE</h1>
+                        <p style="color: #6B7280;">${invNum}</p>
+                    </div>
+                </div>
+                <!-- From / To / Dates -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px;">
+                    <div>
+                        <strong>From</strong><br>${from.name}<br>${from.email}<br>${from.phone}<br>${from.address}<br>
+                        ${from.taxId ? `<span class="text-xs text-gray-500">NTN/STRN: ${from.taxId}</span>` : ''}
+                    </div>
+                    <div>
+                        <strong>To</strong><br>${to.name}<br>${to.email}<br>${to.address}<br>
+                        ${to.poNumber ? `<span class="text-xs text-gray-500">PO: ${to.poNumber}</span>` : ''}
+                    </div>
+                </div>
+                <div style="display: flex; gap: 24px; margin-bottom: 24px;">
+                    <div><strong>Invoice Date</strong><br>${invoiceDate}</div>
+                    <div><strong>Due Date</strong><br>${dueDate || '—'}</div>
+                </div>
+                <!-- Items table -->
+                <table class="invoice-table" style="width: 100%; border-collapse: collapse; margin-bottom: 24px;">
+                    <thead><tr style="border-bottom: 2px solid #E5E7EB;">
+                        <th style="text-align: left; padding: 8px;">Item / Deliverable</th>
+                        <th style="text-align: right; padding: 8px;">Qty</th>
+                        <th style="text-align: right; padding: 8px;">Rate</th>
+                        <th style="text-align: right; padding: 8px;">Amount</th>
+                    <tr></thead>
+                    <tbody>`;
         items.forEach(i => {
             if (i.description || i.qty || i.rate) {
-                inner += `<tr style="border-bottom:1px solid #E5E7EB;">
-                            <td style="padding:8px;">${i.description || '-'}</td>
-                            <td style="text-align:right;padding:8px;">${i.qty || 0}</td>
-                            <td style="text-align:right;padding:8px;">${currencySymbol}${(i.rate || 0).toFixed(2)}</td>
-                            <td style="text-align:right;padding:8px;">${currencySymbol}${((i.qty||0)*(i.rate||0)).toFixed(2)}</td>
+                inner += `<tr style="border-bottom: 1px solid #E5E7EB;">
+                            <td style="padding: 8px;">${i.description || '-'}</td>
+                            <td style="text-align: right; padding: 8px;">${i.qty || 0}</td>
+                            <td style="text-align: right; padding: 8px;">${currencySymbol}${(i.rate || 0).toFixed(2)}</td>
+                            <td style="text-align: right; padding: 8px;">${currencySymbol}${((i.qty||0)*(i.rate||0)).toFixed(2)}</td>
                          </tr>`;
             }
         });
-        inner += `</tbody>
-            </table>
-            <div style="text-align:right;margin-top:20px;border-top:1px solid #E5E7EB;padding-top:16px;">
-                <div>Subtotal: ${currencySymbol}${subtotal.toFixed(2)}</div>
-                ${discountPercent > 0 ? `<div>Discount (${discountPercent}%): -${currencySymbol}${discountAmount.toFixed(2)}</div>` : ''}
-                <div>GST/VAT (${taxRate}%): ${currencySymbol}${taxAmount.toFixed(2)}</div>
-                <div style="font-size:24px;font-weight:bold;margin-top:8px;">Total: ${currencySymbol}${total.toFixed(2)}</div>
-                ${dueDate ? `<div class="text-sm text-gray-500 mt-2">Due: ${dueDate}</div>` : ''}
-                ${paymentInfo ? `<div class="text-xs mt-2"><strong>Payment:</strong> ${paymentInfo.replace(/\n/g,'<br>')}</div>` : ''}
-                ${notes ? `<div class="text-xs mt-2"><strong>Notes:</strong> ${notes}</div>` : ''}
+        inner += `
+                    </tbody>
+                 </table>
+                <div style="text-align: right; margin-top: 20px; border-top: 1px solid #E5E7EB; padding-top: 16px;">
+                    <div>Subtotal: ${currencySymbol}${subtotal.toFixed(2)}</div>
+                    ${discountPercent > 0 ? `<div>Discount (${discountPercent}%): -${currencySymbol}${discountAmount.toFixed(2)}</div>` : ''}
+                    <div>GST/VAT (${taxRate}%): ${currencySymbol}${taxAmount.toFixed(2)}</div>
+                    <div style="font-size: 24px; font-weight: bold; margin-top: 8px;">Total: ${currencySymbol}${total.toFixed(2)}</div>
+                </div>
+                ${paymentInfo ? `<div class="text-sm mt-4 p-3 bg-gray-50 rounded"><strong>Payment details</strong><br>${paymentInfo.replace(/\n/g, '<br>')}</div>` : ''}
+                <div class="text-sm mt-4 p-3 bg-gray-50 rounded"><strong>Notes & Terms</strong><br>${notes.replace(/\n/g, '<br>')}</div>
                 ${isPaid && paidDate ? `<div class="text-sm mt-2 font-semibold text-green-600">PAID on ${paidDate} via ${paidMethod}</div>` : ''}
-            </div>
-        </div>`;
+                <div class="footer-signature">
+                    ${from.name} | Full‑Stack Developer | <a href="${document.getElementById('fromWebsite')?.value || '#'}" target="_blank">${document.getElementById('fromWebsite')?.value || 'website'}</a> | ${from.email}
+                </div>
+            </div>`;
         const previewDiv = document.getElementById('livePreviewContent');
         previewDiv.innerHTML = inner;
     }
@@ -362,7 +428,7 @@
     });
     document.getElementById('currency')?.addEventListener('change', () => {
         updatePaymentInfoPlaceholder();
-        renderItemsTable(); // refresh currency symbols
+        renderItemsTable();
         saveFullInvoice();
         updateLivePreview();
     });
@@ -380,7 +446,7 @@
     document.getElementById('paidDate')?.addEventListener('change', () => { saveFullInvoice(); updateLivePreview(); });
     document.getElementById('paidMethod')?.addEventListener('change', () => { saveFullInvoice(); updateLivePreview(); });
     document.getElementById('dueTerms')?.addEventListener('change', () => { saveFullInvoice(); updateLivePreview(); });
-    const allInputs = ['#fromName', '#fromEmail', '#fromPhone', '#fromAddress', '#fromWebsite', '#fromTaxId', '#toName', '#toEmail', '#toPhone', '#toAddress', '#toTaxId', '#invNumber', '#issueDate', '#dueTerms', '#currency', '#taxRate', '#discount', '#poNumber', '#paymentInfo', '#notes'];
+    const allInputs = ['#fromName', '#fromEmail', '#fromPhone', '#fromAddress', '#fromWebsite', '#fromTaxId', '#toName', '#toEmail', '#toPhone', '#toAddress', '#poNumber', '#invNumber', '#issueDate', '#dueTerms', '#currency', '#taxRate', '#discount', '#paymentInfo', '#notes'];
     allInputs.forEach(sel => { const el = document.querySelector(sel); if (el) el.addEventListener('input', () => { saveFullInvoice(); updateLivePreview(); }); });
     document.getElementById('downloadPdfBtn')?.addEventListener('click', () => {
         const w = window.open('', '_blank');
@@ -397,7 +463,10 @@
         }
         loadSavedData();
         if (!items.length) {
-            items = [{ id: Date.now(), description: 'Sample Service', qty: 1, rate: 100 }, { id: Date.now()+1, description: 'Consulting', qty: 2, rate: 75 }];
+            items = [
+                { id: Date.now(), description: 'API Integration: Stripe Webhooks + Error Handling', qty: 1, rate: 100 },
+                { id: Date.now()+1, description: 'Code Review & Refactor: Auth Module | 2 hours', qty: 2, rate: 75 }
+            ];
             renderItemsTable();
         }
         if (!document.getElementById('issueDate').value) document.getElementById('issueDate').value = new Date().toISOString().slice(0,10);
