@@ -20,25 +20,25 @@
             font-size: 28px;
             padding: 8px 24px;
             border-radius: 8px;
-            opacity: 0.85;
+            opacity: 0.9;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             font-family: 'Inter', sans-serif;
             letter-spacing: 2px;
+            z-index: 10;
         }
-        .preview-container {
-            position: relative;
+        #livePreviewContent {
             background: white;
             border-radius: 12px;
-            padding: 2rem;
-            margin: 0 auto;
-            max-width: 100%;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            padding: 24px;
+            min-height: 400px;
+            transition: all 0.2s;
+            position: relative;
         }
     </style>
 </head>
 <body class="bg-gray-50">
 
-<!-- Header (unchanged) -->
+<!-- Header -->
 <div class="bg-white border-b border-gray-200 sticky top-0 z-10">
     <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
         <a href="index.html" class="font-bold text-xl text-[#0066FF]">InvoiceForge</a>
@@ -51,7 +51,7 @@
 </div>
 
 <main class="max-w-7xl mx-auto px-4 py-8">
-    <!-- Template Switcher (always visible) -->
+    <!-- Template Switcher -->
     <div class="mb-6 bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
         <label class="block text-sm font-medium text-gray-700 mb-2">Choose Template Style</label>
         <div class="flex gap-3">
@@ -64,7 +64,6 @@
     <div class="grid lg:grid-cols-2 gap-8">
         <!-- LEFT: FORM PANEL -->
         <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-            <!-- Tabs -->
             <div class="flex border-b border-gray-200 mb-6">
                 <button class="tab-btn px-4 py-2 text-sm font-medium tab-active" data-tab="from">From</button>
                 <button class="tab-btn px-4 py-2 text-sm font-medium text-gray-500" data-tab="to">To</button>
@@ -117,30 +116,48 @@
                 <div><label class="block text-sm font-medium text-gray-700">Tax Rate (%)</label><input type="number" id="taxRate" value="17" step="0.1" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
                 <div><label class="block text-sm font-medium text-gray-700">Discount (%)</label><input type="number" id="discount" value="0" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
                 <div><label class="block text-sm font-medium text-gray-700">PO Number</label><input type="text" id="poNumber" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
-                <div><label class="block text-sm font-medium text-gray-700">Payment Info</label><textarea id="paymentInfo" rows="3" placeholder="Bank details, JazzCash, etc." class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></textarea></div>
-                <div><label class="block text-sm font-medium text-gray-700">Status</label><select id="status" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"><option>Draft</option><option>Sent</option><option selected>Paid</option><option>Overdue</option></select></div>
+                <div><label class="block text-sm font-medium text-gray-700">Payment Info</label><textarea id="paymentInfo" rows="3" placeholder="Bank details, JazzCash..." class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></textarea></div>
+                <div><label class="block text-sm font-medium text-gray-700">Status</label><select id="status" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"><option>Draft</option><option>Sent</option><option>Paid</option><option>Overdue</option></select></div>
                 <div><label class="block text-sm font-medium text-gray-700">Notes</label><textarea id="notes" rows="2" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></textarea></div>
             </div>
 
-            <!-- Extras Tab -->
-            <div id="tab-extras" class="tab-pane hidden space-y-4">
-                <div><label class="block text-sm font-medium text-gray-700">Late Fee (%)</label><input type="number" id="lateFee" value="2" step="0.5" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"><span class="text-xs text-gray-500">Per month after due date</span></div>
-                <div><label class="block text-sm font-medium text-gray-700">Signature (PNG)</label><input type="file" accept="image/*" id="signatureUpload" class="mt-1 w-full"><p class="text-xs text-gray-500">Upload signature – appears below your name</p></div>
-                <div><label class="block text-sm font-medium text-gray-700">Custom Field 1</label><div class="flex gap-2"><input type="text" id="customLabel1" placeholder="Label (e.g., Project ID)" class="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm"><input type="text" id="customValue1" placeholder="Value" class="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm"></div></div>
-                <div><label class="block text-sm font-medium text-gray-700">Custom Field 2</label><div class="flex gap-2"><input type="text" id="customLabel2" placeholder="Label" class="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm"><input type="text" id="customValue2" placeholder="Value" class="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm"></div></div>
+            <!-- Extras Tab (improved layout) -->
+            <div id="tab-extras" class="tab-pane hidden space-y-5">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Late Fee (%)</label>
+                    <input type="number" id="lateFee" value="2" step="0.5" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                    <p class="text-xs text-gray-500 mt-1">Per month after due date</p>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Signature (PNG)</label>
+                    <input type="file" accept="image/*" id="signatureUpload" class="mt-1 w-full text-sm">
+                    <p class="text-xs text-gray-500 mt-1">Upload signature – appears below your name on Letter template</p>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Custom Field 1</label>
+                    <div class="flex gap-3">
+                        <input type="text" id="customLabel1" placeholder="Label (e.g., Project ID)" class="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                        <input type="text" id="customValue1" placeholder="Value" class="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Custom Field 2</label>
+                    <div class="flex gap-3">
+                        <input type="text" id="customLabel2" placeholder="Label" class="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                        <input type="text" id="customValue2" placeholder="Value" class="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- RIGHT: LIVE PREVIEW (with stamp container) -->
+        <!-- RIGHT: LIVE PREVIEW -->
         <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-6 sticky top-24">
             <div class="flex justify-between items-center mb-4">
                 <h2 class="font-semibold text-gray-900">Live Preview</h2>
                 <span id="templateBadge" class="text-xs bg-gray-100 px-2 py-1 rounded">Letter</span>
             </div>
-            <div id="previewWrapper" class="relative">
-                <div id="livePreviewContent" class="border border-gray-200 rounded-lg p-4 bg-gray-50 min-h-[400px] overflow-y-auto">
-                    <p class="text-gray-500 text-center text-sm">Fill in the form to see preview</p>
-                </div>
+            <div id="livePreviewContent" class="min-h-[400px] transition-all">
+                <p class="text-gray-500 text-center text-sm">Loading preview...</p>
             </div>
             <div class="mt-4 flex gap-3">
                 <button id="downloadPdfBtn" class="flex-1 bg-[#0066FF] text-white py-2 rounded-lg font-medium hover:bg-[#0052CC] transition">Download PDF</button>
@@ -164,7 +181,7 @@
         });
     });
 
-    // ---------- ITEMS TABLE ----------
+    // ---------- ITEMS DATA ----------
     let items = [];
 
     function getCurrencySymbol() {
@@ -176,9 +193,9 @@
         const subtotal = items.reduce((sum, i) => sum + (i.qty || 0) * (i.rate || 0), 0);
         const taxRate = parseFloat(document.getElementById('taxRate')?.value) || 17;
         const discount = parseFloat(document.getElementById('discount')?.value) || 0;
-        const subtotalAfterDiscount = subtotal - (subtotal * discount / 100);
-        const taxAmount = subtotalAfterDiscount * taxRate / 100;
-        const total = subtotalAfterDiscount + taxAmount;
+        const afterDiscount = subtotal - (subtotal * discount / 100);
+        const taxAmount = afterDiscount * taxRate / 100;
+        const total = afterDiscount + taxAmount;
         document.getElementById('subtotal').innerText = `${getCurrencySymbol()}${subtotal.toFixed(2)}`;
         document.getElementById('taxAmount').innerText = `${getCurrencySymbol()}${taxAmount.toFixed(2)}`;
         document.getElementById('grandTotal').innerText = `${getCurrencySymbol()}${total.toFixed(2)}`;
@@ -189,6 +206,9 @@
         const tbody = document.getElementById('items-tbody');
         if (!tbody) return;
         tbody.innerHTML = '';
+        if (items.length === 0) {
+            items.push({ id: Date.now(), description: '', qty: 1, rate: 0 });
+        }
         items.forEach((item, idx) => {
             const row = tbody.insertRow();
             row.className = 'border-b border-gray-100';
@@ -216,7 +236,14 @@
             amountCell.innerText = `${symbol}${((item.qty||0)*(item.rate||0)).toFixed(2)}`;
             const delCell = row.insertCell(4); delCell.className = 'text-center py-2';
             const delBtn = document.createElement('button'); delBtn.innerHTML = '✕'; delBtn.className = 'text-red-500 hover:text-red-700 text-xs';
-            delBtn.addEventListener('click', () => { if (items.length === 1) return; items.splice(idx, 1); renderItemsTable(); saveFullInvoice(); calculateTotals(); updateLivePreview(); });
+            delBtn.addEventListener('click', () => {
+                if (items.length === 1) return;
+                items.splice(idx, 1);
+                renderItemsTable();
+                saveFullInvoice();
+                calculateTotals();
+                updateLivePreview();
+            });
             delCell.appendChild(delBtn);
         });
         calculateTotals();
@@ -237,7 +264,7 @@
         const saved = localStorage.getItem('invoiceforge_app');
         if (!saved) return;
         const data = JSON.parse(saved);
-        if (data.items) { items = data.items; renderItemsTable(); }
+        if (data.items && data.items.length) items = data.items;
         if (data.from) {
             for (let k in data.from) { let el = document.getElementById(`from${k.charAt(0).toUpperCase()}${k.slice(1)}`); if (el) el.value = data.from[k]; }
         }
@@ -250,6 +277,7 @@
         if (data.extras) {
             for (let k in data.extras) { let el = document.getElementById(k); if (el) el.value = data.extras[k]; }
         }
+        renderItemsTable();
     }
 
     // ---------- TEMPLATE SWITCHER ----------
@@ -269,7 +297,7 @@
     document.getElementById('templateInvoice').addEventListener('click', () => { currentTemplate = 'Invoice'; localStorage.setItem('invoiceTemplate', currentTemplate); updateTemplateButtons(); updateLivePreview(); });
     updateTemplateButtons();
 
-    // ---------- LIVE PREVIEW (polished, with PAID stamp) ----------
+    // ---------- LIVE PREVIEW (with forced dummy content if empty) ----------
     function updateLivePreview() {
         const from = { name: document.getElementById('fromName')?.value || 'Your Name', email: document.getElementById('fromEmail')?.value || 'your@email.com', phone: document.getElementById('fromPhone')?.value || '', address: document.getElementById('fromAddress')?.value || '' };
         const to = { name: document.getElementById('toName')?.value || 'Client Name', email: document.getElementById('toEmail')?.value || 'client@email.com', address: document.getElementById('toAddress')?.value || '' };
@@ -282,7 +310,7 @@
         const taxRate = parseFloat(document.getElementById('taxRate')?.value) || 17;
         const taxAmount = afterDiscount * taxRate / 100;
         const total = afterDiscount + taxAmount;
-        const lateFee = document.getElementById('lateFee')?.value ? `Late fee: ${lateFee}% per month after due date` : '';
+        const lateFee = document.getElementById('lateFee')?.value ? `Late fee: ${document.getElementById('lateFee').value}% per month after due date` : '';
         const status = document.getElementById('status')?.value;
         const signatureData = localStorage.getItem('invoiceSignature');
         const customFields = [];
@@ -306,19 +334,23 @@
                             <div><strong>To</strong><br>${to.name}<br>${to.email}<br>${to.address}</div>
                         </div>
                         <table style="width: 100%; border-collapse: collapse; margin-bottom: 32px;">
-                            <thead><tr style="border-bottom: 2px solid #E5E7EB;"><th style="text-align: left; padding: 8px;">Description</th><th style="text-align: center;">Qty</th><th style="text-align: right;">Rate</th><th style="text-align: right;">Amount</th></tr></thead>
+                            <thead><tr style="border-bottom: 2px solid #E5E7EB;"><th style="text-align: left; padding: 8px;">Description</th><th style="text-align: center;">Qty</th><th style="text-align: right;">Rate</th><th style="text-align: right;">Amount</th></table></thead>
                             <tbody>`;
-            items.forEach(i => {
-                if (i.description || i.qty || i.rate) {
-                    inner += `<tr style="border-bottom: 1px solid #F3F4F6;">
-                                <td style="padding: 8px;">${i.description || '-'}</td>
-                                <td style="text-align: center;">${i.qty || 0}</td>
-                                <td style="text-align: right;">${currency}${(i.rate || 0).toFixed(2)}</td>
-                                <td style="text-align: right;">${currency}${((i.qty||0)*(i.rate||0)).toFixed(2)}</td>
-                            </tr>`;
-                }
-            });
-            inner += `</tbody></table>
+            if (items.length === 0 || items.every(i => !i.description && !i.qty && !i.rate)) {
+                inner += `<tr><td colspan="4" class="text-center text-gray-400 py-4">No items added – click "+ Add line item"</td></tr>`;
+            } else {
+                items.forEach(i => {
+                    if (i.description || i.qty || i.rate) {
+                        inner += `<tr style="border-bottom: 1px solid #F3F4F6;">
+                                    <td style="padding: 8px;">${i.description || '-'}</td>
+                                    <td style="text-align: center;">${i.qty || 0}</td>
+                                    <td style="text-align: right;">${currency}${(i.rate || 0).toFixed(2)}</td>
+                                    <td style="text-align: right;">${currency}${((i.qty||0)*(i.rate||0)).toFixed(2)}</td>
+                                 </tr>`;
+                    }
+                });
+            }
+            inner += `</tbody>赶
                         <div style="text-align: right; border-top: 2px solid #E5E7EB; padding-top: 16px;">
                             <div>Subtotal: ${currency}${subtotal.toFixed(2)}</div>
                             ${discountPercent > 0 ? `<div>Discount (${discountPercent}%): -${currency}${discountAmount.toFixed(2)}</div>` : ''}
@@ -335,7 +367,11 @@
                         <hr><div><strong>${from.name}</strong><br>${from.email}</div><hr>
                         <div><strong>${to.name}</strong><br>${to.email}</div><hr>
                         <table style="width: 100%;"><thead><tr><th>Item</th><th>Amount</th></tr></thead><tbody>`;
-            items.forEach(i => { if (i.description) inner += `<tr><td>${i.description}</td><td style="text-align:right">${currency}${((i.qty||0)*(i.rate||0)).toFixed(2)}</td></tr>`; });
+            if (items.length === 0 || items.every(i => !i.description)) {
+                inner += `<tr><td colspan="2" class="text-center">No items</td></tr>`;
+            } else {
+                items.forEach(i => { if (i.description) inner += `<tr><td>${i.description}</td><td style="text-align:right">${currency}${((i.qty||0)*(i.rate||0)).toFixed(2)}</td></tr>`; });
+            }
             inner += `</tbody></table><div style="text-align:right;margin-top:16px;">Total: ${currency}${total.toFixed(2)}</div>${lateFee ? `<div class="text-xs mt-2">${lateFee}</div>` : ''}</div>`;
         } else { // Invoice (modern)
             inner = `<div style="font-family: 'Inter', sans-serif;">
@@ -348,18 +384,19 @@
                             <div><strong>To</strong><br>${to.name}<br>${to.email}</div>
                         </div>
                         <table style="width: 100%;"><thead><tr style="background:#F3F4F6;"><th style="text-align:left;padding:8px;">Item</th><th style="text-align:right;padding:8px;">Amount</th></tr></thead><tbody>`;
-            items.forEach(i => { if (i.description) inner += `<tr><td style="padding:8px;">${i.description}</td><td style="text-align:right;padding:8px;">${currency}${((i.qty||0)*(i.rate||0)).toFixed(2)}</td></tr>`; });
+            if (items.length === 0 || items.every(i => !i.description)) {
+                inner += `<tr><td colspan="2" class="text-center text-gray-400">No items added</td></tr>`;
+            } else {
+                items.forEach(i => { if (i.description) inner += `<tr><td style="padding:8px;">${i.description}</td><td style="text-align:right;padding:8px;">${currency}${((i.qty||0)*(i.rate||0)).toFixed(2)}</td></tr>`; });
+            }
             inner += `</tbody></table><div style="text-align:right;margin-top:20px;"><div style="font-size:24px;font-weight:bold;">${currency}${total.toFixed(2)}</div>${lateFee ? `<div class="text-xs text-gray-500">${lateFee}</div>` : ''}</div></div>`;
         }
-        // Add PAID stamp if status is "Paid"
-        let stampHtml = '';
+        const previewDiv = document.getElementById('livePreviewContent');
         if (status === 'Paid') {
-            stampHtml = `<div class="paid-stamp">PAID</div>`;
+            previewDiv.innerHTML = `<div style="position: relative;">${inner}<div class="paid-stamp">PAID</div></div>`;
+        } else {
+            previewDiv.innerHTML = inner;
         }
-        const wrapper = document.getElementById('livePreviewContent');
-        wrapper.innerHTML = stampHtml + inner;
-        // Ensure the wrapper can position absolute for stamp
-        wrapper.style.position = 'relative';
     }
 
     // ---------- EVENT LISTENERS ----------
@@ -401,12 +438,18 @@
             reader.readAsDataURL(file);
         }
     });
-    // Initialize
+
+    // ---------- INITIALIZATION ----------
     loadSavedData();
-    if (!items.length) { items = [{ id: Date.now(), description: '', qty: 1, rate: 0 }]; renderItemsTable(); }
+    if (!items.length) {
+        items = [{ id: Date.now(), description: 'Sample service', qty: 1, rate: 100 }];
+        renderItemsTable();
+    }
     if (!document.getElementById('issueDate').value) document.getElementById('issueDate').value = new Date().toISOString().slice(0,10);
     calculateTotals();
     updateLivePreview();
+    // Force another update after half a second to ensure everything renders
+    setTimeout(() => { updateLivePreview(); }, 500);
 </script>
 </body>
 </html>
