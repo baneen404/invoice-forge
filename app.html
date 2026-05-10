@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>InvoiceForge – Professional Invoice Builder</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -33,6 +33,38 @@
             min-height: 400px;
             transition: all 0.2s;
             position: relative;
+            overflow-x: auto;
+        }
+        .invoice-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .invoice-table th, .invoice-table td {
+            padding: 8px;
+            vertical-align: top;
+        }
+        .invoice-table th:first-child, .invoice-table td:first-child {
+            text-align: left;
+        }
+        .invoice-table th:nth-child(2), .invoice-table td:nth-child(2),
+        .invoice-table th:nth-child(3), .invoice-table td:nth-child(3),
+        .invoice-table th:nth-child(4), .invoice-table td:nth-child(4) {
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+        }
+        /* Desktop layout: fixed left, fluid right */
+        .builder-grid {
+            display: grid;
+            grid-template-columns: 420px 1fr;
+            gap: 32px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        @media (max-width: 900px) {
+            .builder-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
         }
     </style>
 </head>
@@ -51,7 +83,7 @@
 </div>
 
 <main class="max-w-7xl mx-auto px-4 py-8">
-    <!-- Template Switcher -->
+    <!-- Template Switcher (kept but you may later kill 2 templates) -->
     <div class="mb-6 bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
         <label class="block text-sm font-medium text-gray-700 mb-2">Choose Template Style</label>
         <div class="flex gap-3">
@@ -61,10 +93,10 @@
         </div>
     </div>
 
-    <div class="grid lg:grid-cols-2 gap-8">
+    <div class="builder-grid">
         <!-- LEFT: FORM PANEL -->
         <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-            <div class="flex border-b border-gray-200 mb-6">
+            <div class="flex border-b border-gray-200 mb-6 flex-wrap">
                 <button class="tab-btn px-4 py-2 text-sm font-medium tab-active" data-tab="from">From</button>
                 <button class="tab-btn px-4 py-2 text-sm font-medium text-gray-500" data-tab="to">To</button>
                 <button class="tab-btn px-4 py-2 text-sm font-medium text-gray-500" data-tab="items">Items</button>
@@ -74,28 +106,28 @@
 
             <!-- From Tab -->
             <div id="tab-from" class="tab-pane space-y-4">
-                <div><label class="block text-sm font-medium text-gray-700">Your Name</label><input type="text" id="fromName" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
-                <div><label class="block text-sm font-medium text-gray-700">Email</label><input type="email" id="fromEmail" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
-                <div><label class="block text-sm font-medium text-gray-700">Phone</label><input type="text" id="fromPhone" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
-                <div><label class="block text-sm font-medium text-gray-700">Address</label><textarea id="fromAddress" rows="2" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></textarea></div>
-                <div><label class="block text-sm font-medium text-gray-700">Website</label><input type="text" id="fromWebsite" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
-                <div><label class="block text-sm font-medium text-gray-700">Tax ID / NTN</label><input type="text" id="fromTaxId" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
+                <div><label class="block text-sm font-medium text-gray-700">Your Name</label><input type="text" id="fromName" placeholder="e.g., Ali Raza" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
+                <div><label class="block text-sm font-medium text-gray-700">Email</label><input type="email" id="fromEmail" placeholder="ali@studio.com" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
+                <div><label class="block text-sm font-medium text-gray-700">Phone</label><input type="text" id="fromPhone" placeholder="+92 300 1234567" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
+                <div><label class="block text-sm font-medium text-gray-700">Address</label><textarea id="fromAddress" rows="2" placeholder="Street, City, Country" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></textarea></div>
+                <div><label class="block text-sm font-medium text-gray-700">Website</label><input type="text" id="fromWebsite" placeholder="https://yourwebsite.com" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
+                <div><label class="block text-sm font-medium text-gray-700">Tax ID / NTN</label><input type="text" id="fromTaxId" placeholder="NTN number" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
             </div>
 
             <!-- To Tab -->
             <div id="tab-to" class="tab-pane hidden space-y-4">
-                <div><label class="block text-sm font-medium text-gray-700">Client Name</label><input type="text" id="toName" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
-                <div><label class="block text-sm font-medium text-gray-700">Client Email</label><input type="email" id="toEmail" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
-                <div><label class="block text-sm font-medium text-gray-700">Client Phone</label><input type="text" id="toPhone" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
-                <div><label class="block text-sm font-medium text-gray-700">Client Address</label><textarea id="toAddress" rows="2" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></textarea></div>
-                <div><label class="block text-sm font-medium text-gray-700">Client Tax ID / NTN</label><input type="text" id="toTaxId" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
+                <div><label class="block text-sm font-medium text-gray-700">Client Name</label><input type="text" id="toName" placeholder="e.g., Sarah Khan" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
+                <div><label class="block text-sm font-medium text-gray-700">Client Email</label><input type="email" id="toEmail" placeholder="client@company.com" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
+                <div><label class="block text-sm font-medium text-gray-700">Client Phone</label><input type="text" id="toPhone" placeholder="+92 321 7654321" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
+                <div><label class="block text-sm font-medium text-gray-700">Client Address</label><textarea id="toAddress" rows="2" placeholder="Client office address" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></textarea></div>
+                <div><label class="block text-sm font-medium text-gray-700">Client Tax ID / NTN</label><input type="text" id="toTaxId" placeholder="Client NTN (optional)" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
             </div>
 
             <!-- Items Tab -->
             <div id="tab-items" class="tab-pane hidden">
                 <div class="overflow-x-auto">
                     <table class="w-full text-sm">
-                        <thead class="border-b border-gray-200"><tr class="text-left text-gray-500"><th class="pb-2">Description</th><th class="pb-2 w-20 text-center">Qty</th><th class="pb-2 w-28 text-right">Rate</th><th class="pb-2 w-28 text-right">Amount</th><th class="pb-2 w-8"></th></tr></thead>
+                        <thead class="border-b border-gray-200"><tr class="text-left text-gray-500"><th class="pb-2">Description</th><th class="pb-2 w-20 text-right">Qty</th><th class="pb-2 w-28 text-right">Rate</th><th class="pb-2 w-28 text-right">Amount</th><th class="pb-2 w-8"></th> </tr></thead>
                         <tbody id="items-tbody"></tbody>
                     </table>
                 </div>
@@ -115,38 +147,18 @@
                 <div><label class="block text-sm font-medium text-gray-700">Currency</label><select id="currency" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"><option value="USD">USD ($)</option><option value="PKR">PKR (Rs)</option><option value="EUR">EUR (€)</option></select></div>
                 <div><label class="block text-sm font-medium text-gray-700">Tax Rate (%)</label><input type="number" id="taxRate" value="17" step="0.1" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
                 <div><label class="block text-sm font-medium text-gray-700">Discount (%)</label><input type="number" id="discount" value="0" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
-                <div><label class="block text-sm font-medium text-gray-700">PO Number</label><input type="text" id="poNumber" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
-                <div><label class="block text-sm font-medium text-gray-700">Payment Info</label><textarea id="paymentInfo" rows="3" placeholder="Bank details, JazzCash..." class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></textarea></div>
-                <div><label class="block text-sm font-medium text-gray-700">Status</label><select id="status" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"><option>Draft</option><option>Sent</option><option>Paid</option><option>Overdue</option></select></div>
-                <div><label class="block text-sm font-medium text-gray-700">Notes</label><textarea id="notes" rows="2" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></textarea></div>
+                <div><label class="block text-sm font-medium text-gray-700">PO Number</label><input type="text" id="poNumber" placeholder="Client PO #" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
+                <div><label class="block text-sm font-medium text-gray-700">Payment Info</label><textarea id="paymentInfo" rows="3" placeholder="Bank: HBL\nIBAN: PK36HABB...\nJazzCash: 03xx-xxxxxxx" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></textarea></div>
+                <div><label class="block text-sm font-medium text-gray-700">Mark as Paid</label><div class="flex items-center gap-2 mt-1"><input type="checkbox" id="isPaidCheckbox" class="w-4 h-4 text-[#0066FF]"><label class="text-sm text-gray-600">(Shows PAID stamp on invoice)</label></div></div>
+                <div><label class="block text-sm font-medium text-gray-700">Notes</label><textarea id="notes" rows="2" placeholder="Thank you for your business!" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></textarea></div>
             </div>
 
-            <!-- Extras Tab (improved layout) -->
+            <!-- Extras Tab -->
             <div id="tab-extras" class="tab-pane hidden space-y-5">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Late Fee (%)</label>
-                    <input type="number" id="lateFee" value="2" step="0.5" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
-                    <p class="text-xs text-gray-500 mt-1">Per month after due date</p>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Signature (PNG)</label>
-                    <input type="file" accept="image/*" id="signatureUpload" class="mt-1 w-full text-sm">
-                    <p class="text-xs text-gray-500 mt-1">Upload signature – appears below your name on Letter template</p>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Custom Field 1</label>
-                    <div class="flex gap-3">
-                        <input type="text" id="customLabel1" placeholder="Label (e.g., Project ID)" class="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm">
-                        <input type="text" id="customValue1" placeholder="Value" class="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm">
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Custom Field 2</label>
-                    <div class="flex gap-3">
-                        <input type="text" id="customLabel2" placeholder="Label" class="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm">
-                        <input type="text" id="customValue2" placeholder="Value" class="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm">
-                    </div>
-                </div>
+                <div><label class="block text-sm font-medium text-gray-700">Late Fee (%)</label><input type="number" id="lateFee" value="2" step="0.5" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"><p class="text-xs text-gray-500 mt-1">Per month after due date</p></div>
+                <div><label class="block text-sm font-medium text-gray-700">Signature (PNG)</label><input type="file" accept="image/*" id="signatureUpload" class="mt-1 w-full text-sm"><p class="text-xs text-gray-500 mt-1">Upload signature – appears below your name on Letter template</p></div>
+                <div><label class="block text-sm font-medium text-gray-700 mb-2">Custom Field 1</label><div class="flex gap-3"><input type="text" id="customLabel1" placeholder="Label (e.g., Project ID)" class="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm"><input type="text" id="customValue1" placeholder="Value" class="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm"></div></div>
+                <div><label class="block text-sm font-medium text-gray-700 mb-2">Custom Field 2</label><div class="flex gap-3"><input type="text" id="customLabel2" placeholder="Label" class="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm"><input type="text" id="customValue2" placeholder="Value" class="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm"></div></div>
             </div>
         </div>
 
@@ -154,13 +166,13 @@
         <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-6 sticky top-24">
             <div class="flex justify-between items-center mb-4">
                 <h2 class="font-semibold text-gray-900">Live Preview</h2>
-                <span id="templateBadge" class="text-xs bg-gray-100 px-2 py-1 rounded">Letter</span>
+                <span id="templateBadge" class="text-xs bg-gray-100 px-2 py-1 rounded">Invoice</span>
             </div>
-            <div id="livePreviewContent" class="min-h-[400px] transition-all">
+            <div id="livePreviewContent" class="min-h-[400px] transition-all preview-container">
                 <p class="text-gray-500 text-center text-sm">Loading preview...</p>
             </div>
             <div class="mt-4 flex gap-3">
-                <button id="downloadPdfBtn" class="flex-1 bg-[#0066FF] text-white py-2 rounded-lg font-medium hover:bg-[#0052CC] transition">Download PDF</button>
+                <button id="downloadPdfBtn" class="flex-1 bg-[#0066FF] text-white py-2 rounded-lg font-medium hover:bg-[#0052CC] transition">Generate PDF Invoice</button>
                 <button id="exportForgeBtn" class="flex-1 border border-gray-300 text-gray-700 py-2 rounded-lg font-medium hover:bg-gray-50 transition">Save .forge</button>
             </div>
         </div>
@@ -181,7 +193,7 @@
         });
     });
 
-    // ---------- ITEMS DATA ----------
+    // ---------- ITEMS DATA (sample items on first load) ----------
     let items = [];
 
     function getCurrencySymbol() {
@@ -207,7 +219,11 @@
         if (!tbody) return;
         tbody.innerHTML = '';
         if (items.length === 0) {
-            items.push({ id: Date.now(), description: '', qty: 1, rate: 0 });
+            // sample items
+            items = [
+                { id: Date.now(), description: 'Sample Service', qty: 1, rate: 100 },
+                { id: Date.now()+1, description: 'Consulting', qty: 2, rate: 75 }
+            ];
         }
         items.forEach((item, idx) => {
             const row = tbody.insertRow();
@@ -219,9 +235,9 @@
             descInput.className = 'w-full bg-transparent border-none p-0 text-sm';
             descInput.addEventListener('input', (e) => { items[idx].description = e.target.value; saveFullInvoice(); calculateTotals(); updateLivePreview(); });
             descCell.appendChild(descInput);
-            const qtyCell = row.insertCell(1); qtyCell.className = 'text-center py-2';
+            const qtyCell = row.insertCell(1); qtyCell.className = 'text-right py-2';
             const qtyInput = document.createElement('input');
-            qtyInput.type = 'number'; qtyInput.value = item.qty; qtyInput.className = 'w-20 text-center border rounded px-1 py-0.5 text-sm';
+            qtyInput.type = 'number'; qtyInput.value = item.qty; qtyInput.className = 'w-20 text-right border rounded px-1 py-0.5 text-sm';
             qtyInput.step = '0.01'; qtyInput.min = '0';
             qtyInput.addEventListener('input', (e) => { items[idx].qty = parseFloat(e.target.value) || 0; saveFullInvoice(); calculateTotals(); updateLivePreview(); });
             qtyCell.appendChild(qtyInput);
@@ -254,7 +270,7 @@
             items,
             from: { name: document.getElementById('fromName')?.value, email: document.getElementById('fromEmail')?.value, phone: document.getElementById('fromPhone')?.value, address: document.getElementById('fromAddress')?.value, website: document.getElementById('fromWebsite')?.value, taxId: document.getElementById('fromTaxId')?.value },
             to: { name: document.getElementById('toName')?.value, email: document.getElementById('toEmail')?.value, phone: document.getElementById('toPhone')?.value, address: document.getElementById('toAddress')?.value, taxId: document.getElementById('toTaxId')?.value },
-            settings: { invoiceNumber: document.getElementById('invNumber')?.value, issueDate: document.getElementById('issueDate')?.value, dueTerms: document.getElementById('dueTerms')?.value, currency: document.getElementById('currency')?.value, taxRate: document.getElementById('taxRate')?.value, discount: document.getElementById('discount')?.value, poNumber: document.getElementById('poNumber')?.value, paymentInfo: document.getElementById('paymentInfo')?.value, status: document.getElementById('status')?.value, notes: document.getElementById('notes')?.value },
+            settings: { invoiceNumber: document.getElementById('invNumber')?.value, issueDate: document.getElementById('issueDate')?.value, dueTerms: document.getElementById('dueTerms')?.value, currency: document.getElementById('currency')?.value, taxRate: document.getElementById('taxRate')?.value, discount: document.getElementById('discount')?.value, poNumber: document.getElementById('poNumber')?.value, paymentInfo: document.getElementById('paymentInfo')?.value, isPaid: document.getElementById('isPaidCheckbox')?.checked, notes: document.getElementById('notes')?.value },
             extras: { lateFee: document.getElementById('lateFee')?.value, customLabel1: document.getElementById('customLabel1')?.value, customValue1: document.getElementById('customValue1')?.value, customLabel2: document.getElementById('customLabel2')?.value, customValue2: document.getElementById('customValue2')?.value }
         };
         localStorage.setItem('invoiceforge_app', JSON.stringify(invoice));
@@ -272,7 +288,11 @@
             for (let k in data.to) { let el = document.getElementById(`to${k.charAt(0).toUpperCase()}${k.slice(1)}`); if (el) el.value = data.to[k]; }
         }
         if (data.settings) {
-            for (let k in data.settings) { let el = document.getElementById(k); if (el) el.value = data.settings[k]; }
+            for (let k in data.settings) {
+                let el = document.getElementById(k);
+                if (el && k !== 'isPaid') el.value = data.settings[k];
+                if (k === 'isPaid' && document.getElementById('isPaidCheckbox')) document.getElementById('isPaidCheckbox').checked = data.settings[k];
+            }
         }
         if (data.extras) {
             for (let k in data.extras) { let el = document.getElementById(k); if (el) el.value = data.extras[k]; }
@@ -281,7 +301,7 @@
     }
 
     // ---------- TEMPLATE SWITCHER ----------
-    let currentTemplate = localStorage.getItem('invoiceTemplate') || 'Letter';
+    let currentTemplate = localStorage.getItem('invoiceTemplate') || 'Invoice';
     function updateTemplateButtons() {
         document.querySelectorAll('.template-btn').forEach(btn => {
             if (btn.innerText === currentTemplate) {
@@ -297,7 +317,7 @@
     document.getElementById('templateInvoice').addEventListener('click', () => { currentTemplate = 'Invoice'; localStorage.setItem('invoiceTemplate', currentTemplate); updateTemplateButtons(); updateLivePreview(); });
     updateTemplateButtons();
 
-    // ---------- LIVE PREVIEW (with forced dummy content if empty) ----------
+    // ---------- LIVE PREVIEW (no hardcoded PAID stamp) ----------
     function updateLivePreview() {
         const from = { name: document.getElementById('fromName')?.value || 'Your Name', email: document.getElementById('fromEmail')?.value || 'your@email.com', phone: document.getElementById('fromPhone')?.value || '', address: document.getElementById('fromAddress')?.value || '' };
         const to = { name: document.getElementById('toName')?.value || 'Client Name', email: document.getElementById('toEmail')?.value || 'client@email.com', address: document.getElementById('toAddress')?.value || '' };
@@ -311,7 +331,7 @@
         const taxAmount = afterDiscount * taxRate / 100;
         const total = afterDiscount + taxAmount;
         const lateFee = document.getElementById('lateFee')?.value ? `Late fee: ${document.getElementById('lateFee').value}% per month after due date` : '';
-        const status = document.getElementById('status')?.value;
+        const isPaid = document.getElementById('isPaidCheckbox')?.checked || false;
         const signatureData = localStorage.getItem('invoiceSignature');
         const customFields = [];
         if (document.getElementById('customLabel1')?.value && document.getElementById('customValue1')?.value)
@@ -330,27 +350,29 @@
                             ${signatureData ? `<img src="${signatureData}" style="height: 50px; object-fit: contain;">` : ''}
                         </div>
                         <div style="display: flex; justify-content: space-between; margin-bottom: 32px;">
-                            <div><strong>From</strong><br>${from.name}<br>${from.email}<br>${from.phone}<br>${from.address}</div>
-                            <div><strong>To</strong><br>${to.name}<br>${to.email}<br>${to.address}</div>
+                            <div><strong>From</strong><br>${from.name}<br><div>${from.email}</div><div>${from.phone}</div><div>${from.address}</div></div>
+                            <div><strong>To</strong><br>${to.name}<br><div>${to.email}</div><div>${to.address}</div></div>
                         </div>
-                        <table style="width: 100%; border-collapse: collapse; margin-bottom: 32px;">
-                            <thead><tr style="border-bottom: 2px solid #E5E7EB;"><th style="text-align: left; padding: 8px;">Description</th><th style="text-align: center;">Qty</th><th style="text-align: right;">Rate</th><th style="text-align: right;">Amount</th></table></thead>
+                        <table class="invoice-table" style="width: 100%; border-collapse: collapse; margin-bottom: 32px;">
+                            <thead><tr style="border-bottom: 2px solid #E5E7EB;">
+                                <th style="text-align: left; padding: 8px;">Description</th>
+                                <th style="text-align: right; padding: 8px;">Qty</th>
+                                <th style="text-align: right; padding: 8px;">Rate</th>
+                                <th style="text-align: right; padding: 8px;">Amount</th>
+                            </tr></thead>
                             <tbody>`;
-            if (items.length === 0 || items.every(i => !i.description && !i.qty && !i.rate)) {
-                inner += `<tr><td colspan="4" class="text-center text-gray-400 py-4">No items added – click "+ Add line item"</td></tr>`;
-            } else {
-                items.forEach(i => {
-                    if (i.description || i.qty || i.rate) {
-                        inner += `<tr style="border-bottom: 1px solid #F3F4F6;">
-                                    <td style="padding: 8px;">${i.description || '-'}</td>
-                                    <td style="text-align: center;">${i.qty || 0}</td>
-                                    <td style="text-align: right;">${currency}${(i.rate || 0).toFixed(2)}</td>
-                                    <td style="text-align: right;">${currency}${((i.qty||0)*(i.rate||0)).toFixed(2)}</td>
-                                 </tr>`;
-                    }
-                });
-            }
-            inner += `</tbody>赶
+            items.forEach(i => {
+                if (i.description || i.qty || i.rate) {
+                    inner += `<tr style="border-bottom: 1px solid #F3F4F6;">
+                                <td style="padding: 8px;">${i.description || '-'}</td>
+                                <td style="text-align: right; padding: 8px;">${i.qty || 0}</td>
+                                <td style="text-align: right; padding: 8px;">${currency}${(i.rate || 0).toFixed(2)}</td>
+                                <td style="text-align: right; padding: 8px;">${currency}${((i.qty||0)*(i.rate||0)).toFixed(2)}</td>
+                             </tr>`;
+                }
+            });
+            inner += `</tbody>
+                        </table>
                         <div style="text-align: right; border-top: 2px solid #E5E7EB; padding-top: 16px;">
                             <div>Subtotal: ${currency}${subtotal.toFixed(2)}</div>
                             ${discountPercent > 0 ? `<div>Discount (${discountPercent}%): -${currency}${discountAmount.toFixed(2)}</div>` : ''}
@@ -364,16 +386,12 @@
         } else if (currentTemplate === 'Ledger') {
             inner = `<div style="font-family: 'Geist Mono', monospace; border: 2px solid #000; padding: 24px;">
                         <h2 style="font-size: 20px; text-transform: uppercase;">INVOICE ${invNum}</h2>
-                        <hr><div><strong>${from.name}</strong><br>${from.email}</div><hr>
-                        <div><strong>${to.name}</strong><br>${to.email}</div><hr>
-                        <table style="width: 100%;"><thead><tr><th>Item</th><th>Amount</th></tr></thead><tbody>`;
-            if (items.length === 0 || items.every(i => !i.description)) {
-                inner += `<tr><td colspan="2" class="text-center">No items</td></tr>`;
-            } else {
-                items.forEach(i => { if (i.description) inner += `<tr><td>${i.description}</td><td style="text-align:right">${currency}${((i.qty||0)*(i.rate||0)).toFixed(2)}</td></tr>`; });
-            }
+                        <hr><div><strong>${from.name}</strong><br><div>${from.email}</div></div><hr>
+                        <div><strong>${to.name}</strong><br><div>${to.email}</div></div><hr>
+                        <table style="width: 100%;"><thead><tr><th>Item</th><th style="text-align: right;">Amount</th></tr></thead><tbody>`;
+            items.forEach(i => { if (i.description) inner += `<tr><td>${i.description}</td><td style="text-align: right;">${currency}${((i.qty||0)*(i.rate||0)).toFixed(2)}</td></tr>`; });
             inner += `</tbody></table><div style="text-align:right;margin-top:16px;">Total: ${currency}${total.toFixed(2)}</div>${lateFee ? `<div class="text-xs mt-2">${lateFee}</div>` : ''}</div>`;
-        } else { // Invoice (modern)
+        } else { // Invoice (modern – default)
             inner = `<div style="font-family: 'Inter', sans-serif;">
                         <div style="border-left: 6px solid #0066FF; padding-left: 20px; margin-bottom: 24px;">
                             <h1 style="font-size: 32px; margin: 0;">INVOICE</h1>
@@ -384,15 +402,11 @@
                             <div><strong>To</strong><br>${to.name}<br>${to.email}</div>
                         </div>
                         <table style="width: 100%;"><thead><tr style="background:#F3F4F6;"><th style="text-align:left;padding:8px;">Item</th><th style="text-align:right;padding:8px;">Amount</th></tr></thead><tbody>`;
-            if (items.length === 0 || items.every(i => !i.description)) {
-                inner += `<tr><td colspan="2" class="text-center text-gray-400">No items added</td></tr>`;
-            } else {
-                items.forEach(i => { if (i.description) inner += `<tr><td style="padding:8px;">${i.description}</td><td style="text-align:right;padding:8px;">${currency}${((i.qty||0)*(i.rate||0)).toFixed(2)}</td></tr>`; });
-            }
+            items.forEach(i => { if (i.description) inner += `<tr><td style="padding:8px;">${i.description}</td><td style="text-align:right;padding:8px;">${currency}${((i.qty||0)*(i.rate||0)).toFixed(2)}</td></tr>`; });
             inner += `</tbody></table><div style="text-align:right;margin-top:20px;"><div style="font-size:24px;font-weight:bold;">${currency}${total.toFixed(2)}</div>${lateFee ? `<div class="text-xs text-gray-500">${lateFee}</div>` : ''}</div></div>`;
         }
         const previewDiv = document.getElementById('livePreviewContent');
-        if (status === 'Paid') {
+        if (isPaid) {
             previewDiv.innerHTML = `<div style="position: relative;">${inner}<div class="paid-stamp">PAID</div></div>`;
         } else {
             previewDiv.innerHTML = inner;
@@ -409,7 +423,8 @@
     document.getElementById('currency')?.addEventListener('change', () => { renderItemsTable(); saveFullInvoice(); updateLivePreview(); });
     document.getElementById('taxRate')?.addEventListener('input', () => { calculateTotals(); saveFullInvoice(); updateLivePreview(); });
     document.getElementById('discount')?.addEventListener('input', () => { calculateTotals(); saveFullInvoice(); updateLivePreview(); });
-    const allInputs = ['#fromName', '#fromEmail', '#fromPhone', '#fromAddress', '#fromWebsite', '#fromTaxId', '#toName', '#toEmail', '#toPhone', '#toAddress', '#toTaxId', '#invNumber', '#issueDate', '#dueTerms', '#currency', '#taxRate', '#discount', '#poNumber', '#paymentInfo', '#status', '#notes', '#lateFee', '#customLabel1', '#customValue1', '#customLabel2', '#customValue2'];
+    document.getElementById('isPaidCheckbox')?.addEventListener('change', () => { saveFullInvoice(); updateLivePreview(); });
+    const allInputs = ['#fromName', '#fromEmail', '#fromPhone', '#fromAddress', '#fromWebsite', '#fromTaxId', '#toName', '#toEmail', '#toPhone', '#toAddress', '#toTaxId', '#invNumber', '#issueDate', '#dueTerms', '#currency', '#taxRate', '#discount', '#poNumber', '#paymentInfo', '#notes', '#lateFee', '#customLabel1', '#customValue1', '#customLabel2', '#customValue2'];
     allInputs.forEach(sel => { const el = document.querySelector(sel); if (el) el.addEventListener('input', () => { saveFullInvoice(); updateLivePreview(); }); });
     document.getElementById('downloadPdfBtn')?.addEventListener('click', () => {
         const w = window.open('', '_blank');
@@ -442,13 +457,12 @@
     // ---------- INITIALIZATION ----------
     loadSavedData();
     if (!items.length) {
-        items = [{ id: Date.now(), description: 'Sample service', qty: 1, rate: 100 }];
+        items = [{ id: Date.now(), description: 'Sample Service', qty: 1, rate: 100 }, { id: Date.now()+1, description: 'Consulting', qty: 2, rate: 75 }];
         renderItemsTable();
     }
     if (!document.getElementById('issueDate').value) document.getElementById('issueDate').value = new Date().toISOString().slice(0,10);
     calculateTotals();
     updateLivePreview();
-    // Force another update after half a second to ensure everything renders
     setTimeout(() => { updateLivePreview(); }, 500);
 </script>
 </body>
