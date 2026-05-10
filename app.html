@@ -27,6 +27,7 @@
 
 <main class="pt-24 pb-12 px-4 max-w-7xl mx-auto">
     <div class="grid lg:grid-cols-2 gap-8">
+        <!-- LEFT: FORM PANEL -->
         <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
             <div class="flex border-b border-gray-200 mb-6">
                 <button class="tab-btn px-4 py-2 text-sm font-medium tab-active" data-tab="from">From</button>
@@ -77,9 +78,9 @@
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Template Style</label>
                     <div class="flex gap-2" id="templateSwitcherContainer">
-                        <button data-template="Letter" class="template-btn px-3 py-1 text-sm border border-gray-300 rounded-lg hover:border-blue-500 transition">Letter</button>
-                        <button data-template="Ledger" class="template-btn px-3 py-1 text-sm border border-gray-300 rounded-lg hover:border-blue-500 transition">Ledger</button>
-                        <button data-template="Invoice" class="template-btn px-3 py-1 text-sm border border-gray-300 rounded-lg hover:border-blue-500 transition">Invoice</button>
+                        <button data-template="Letter" class="template-btn px-3 py-1 text-sm border border-gray-300 rounded-lg hover:border-[#0066FF]">Letter</button>
+                        <button data-template="Ledger" class="template-btn px-3 py-1 text-sm border border-gray-300 rounded-lg hover:border-[#0066FF]">Ledger</button>
+                        <button data-template="Invoice" class="template-btn px-3 py-1 text-sm border border-gray-300 rounded-lg hover:border-[#0066FF]">Invoice</button>
                     </div>
                 </div>
                 <div><label class="block text-sm font-medium text-gray-700">Invoice Number</label><input type="text" id="invNumber" value="INV-001" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
@@ -97,13 +98,15 @@
             <div id="tab-extras" class="tab-pane hidden"><p class="text-gray-500 text-center py-8">Late fee, signature, custom fields coming soon.</p></div>
         </div>
 
-        <!-- Right Preview -->
+        <!-- RIGHT: LIVE PREVIEW -->
         <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-6 sticky top-24">
             <div class="flex justify-between items-center mb-4">
                 <h2 class="font-semibold text-gray-900">Live Preview</h2>
                 <span id="templateBadge" class="text-xs bg-gray-100 px-2 py-1 rounded">Letter</span>
             </div>
-            <div id="livePreviewContent" class="border border-gray-200 rounded-lg p-4 bg-gray-50 min-h-[400px] overflow-y-auto"><p class="text-gray-500 text-center text-sm">Fill in the form to see preview</p></div>
+            <div id="livePreviewContent" class="border border-gray-200 rounded-lg p-4 bg-gray-50 min-h-[400px] overflow-y-auto">
+                <p class="text-gray-500 text-center text-sm">Fill in the form to see preview</p>
+            </div>
             <div class="mt-4 flex gap-3">
                 <button id="downloadPdfBtn" class="flex-1 bg-[#0066FF] text-white py-2 rounded-lg font-medium hover:bg-[#0052CC] transition">Download PDF</button>
                 <button id="exportForgeBtn" class="flex-1 border border-gray-300 text-gray-700 py-2 rounded-lg font-medium hover:bg-gray-50 transition">Save .forge</button>
@@ -128,7 +131,9 @@
 
     // Items data
     let items = [];
+
     function getCurrencySymbol() { const map = { USD: '$', PKR: 'Rs', EUR: '€' }; return map[document.getElementById('currency')?.value] || '$'; }
+
     function calculateTotals() {
         const subtotal = items.reduce((sum, i) => sum + (i.qty || 0) * (i.rate || 0), 0);
         const taxRate = parseFloat(document.getElementById('taxRate')?.value) || 17;
@@ -139,6 +144,7 @@
         document.getElementById('grandTotal').innerText = `${getCurrencySymbol()}${total.toFixed(2)}`;
         document.getElementById('taxRateDisplay').innerText = taxRate;
     }
+
     function renderItemsTable() {
         const tbody = document.getElementById('items-tbody');
         if (!tbody) return;
@@ -174,6 +180,7 @@
         });
         calculateTotals();
     }
+
     function saveFullInvoice() {
         const invoice = {
             items,
@@ -183,21 +190,32 @@
         };
         localStorage.setItem('invoiceforge_app', JSON.stringify(invoice));
     }
+
     function loadSavedData() {
         const saved = localStorage.getItem('invoiceforge_app');
         if (!saved) return;
         const data = JSON.parse(saved);
-        if (data.from) { Object.keys(data.from).forEach(k => { const el = document.getElementById(`from${k.charAt(0).toUpperCase()}${k.slice(1)}`); if (el) el.value = data.from[k]; }); }
-        if (data.to) { Object.keys(data.to).forEach(k => { const el = document.getElementById(`to${k.charAt(0).toUpperCase()}${k.slice(1)}`); if (el) el.value = data.to[k]; }); }
-        if (data.settings) { Object.keys(data.settings).forEach(k => { const el = document.getElementById(k); if (el) el.value = data.settings[k]; }); }
+        if (data.from) {
+            for (let k in data.from) { let el = document.getElementById(`from${k.charAt(0).toUpperCase()}${k.slice(1)}`); if (el) el.value = data.from[k]; }
+        }
+        if (data.to) {
+            for (let k in data.to) { let el = document.getElementById(`to${k.charAt(0).toUpperCase()}${k.slice(1)}`); if (el) el.value = data.to[k]; }
+        }
+        if (data.settings) {
+            for (let k in data.settings) { let el = document.getElementById(k); if (el) el.value = data.settings[k]; }
+        }
         if (data.items) { items = data.items; renderItemsTable(); }
     }
+
     // Template switcher (event delegation)
     let currentTemplate = localStorage.getItem('invoiceTemplate') || 'Letter';
     function setActiveTemplateButton() {
         document.querySelectorAll('.template-btn').forEach(btn => {
-            if (btn.innerText === currentTemplate) btn.classList.add('bg-blue-50', 'border-blue-500', 'text-blue-600');
-            else btn.classList.remove('bg-blue-50', 'border-blue-500', 'text-blue-600');
+            if (btn.innerText === currentTemplate) {
+                btn.classList.add('bg-blue-50', 'border-blue-500', 'text-blue-600');
+            } else {
+                btn.classList.remove('bg-blue-50', 'border-blue-500', 'text-blue-600');
+            }
         });
         document.getElementById('templateBadge').innerText = currentTemplate;
     }
@@ -210,6 +228,7 @@
         updateLivePreview();
     });
     setActiveTemplateButton();
+
     // Live preview
     function updateLivePreview() {
         const from = { name: document.getElementById('fromName')?.value || 'Your Name', email: document.getElementById('fromEmail')?.value || 'your@email.com', phone: document.getElementById('fromPhone')?.value || '', address: document.getElementById('fromAddress')?.value || '' };
@@ -222,10 +241,7 @@
         const total = subtotal + taxAmount;
         let html = `<div style="font-family: 'Geist', sans-serif; font-size: 13px;">`;
         if (currentTemplate === 'Letter') {
-            html += `<h2 style="font-weight: bold; font-size: 24px;">INVOICE ${invNum}</h2><div style="display: flex; justify-content: space-between; margin: 16px 0;"><div><strong>From</strong><br>${from.name}<br>${from.email}<br>${from.phone}<br>${from.address}</div><div><strong>To</strong><br>${to.name}<br>${to.email}<br>${to.address}</div></div>`;
-            html += `<table style="width:100%; border-collapse: collapse;">...
-                <tbody>${items.map(i => `<tr><td>${i.description||'-'}</td><td style="text-align:right">${i.qty||0}</td><td style="text-align:right">${currency}${(i.rate||0).toFixed(2)}</td><td style="text-align:right">${currency}${((i.qty||0)*(i.rate||0)).toFixed(2)}</td></tr>`).join('')}</tbody>`;
-            html += `<div style="text-align:right;">Subtotal: ${currency}${subtotal.toFixed(2)}<br>Tax (${taxRate}%): ${currency}${taxAmount.toFixed(2)}<br><strong>Total: ${currency}${total.toFixed(2)}</strong></div>`;
+            html += `<h2 style="font-weight: bold; font-size: 24px;">INVOICE ${invNum}</h2><div style="display: flex; justify-content: space-between; margin: 16px 0;"><div><strong>From</strong><br>${from.name}<br>${from.email}<br>${from.phone}<br>${from.address}</div><div><strong>To</strong><br>${to.name}<br>${to.email}<br>${to.address}</div></div><table style="width:100%; border-collapse: collapse;"><tbody>${items.map(i => `<tr><td>${i.description||'-'}</td><td style="text-align:right">${i.qty||0}</td><td style="text-align:right">${currency}${(i.rate||0).toFixed(2)}</td><td style="text-align:right">${currency}${((i.qty||0)*(i.rate||0)).toFixed(2)}</td></tr>`).join('')}</tbody></table><div style="text-align:right;">Subtotal: ${currency}${subtotal.toFixed(2)}<br>Tax (${taxRate}%): ${currency}${taxAmount.toFixed(2)}<br><strong>Total: ${currency}${total.toFixed(2)}</strong></div>`;
         } else if (currentTemplate === 'Ledger') {
             html += `<div style="border:1px solid #999; padding:20px;"><h2>Invoice ${invNum}</h2><hr/><div><strong>${from.name}</strong><br>${from.email}</div><hr/><div><strong>${to.name}</strong><br>${to.email}</div><hr/><table style="width:100%;"><tbody>${items.map(i => `<tr><td>${i.description||'-'}</td><td style="text-align:right">${currency}${((i.qty||0)*(i.rate||0)).toFixed(2)}</td></tr>`).join('')}</tbody></table><div style="text-align:right;">Total: ${currency}${total.toFixed(2)}</div></div>`;
         } else {
@@ -234,6 +250,7 @@
         html += `</div>`;
         document.getElementById('livePreviewContent').innerHTML = html;
     }
+
     // Event listeners
     document.getElementById('addItemBtn')?.addEventListener('click', () => { items.push({ id: Date.now(), description: '', qty: 1, rate: 0 }); renderItemsTable(); saveFullInvoice(); updateLivePreview(); });
     document.getElementById('currency')?.addEventListener('change', () => { renderItemsTable(); saveFullInvoice(); updateLivePreview(); });
@@ -242,10 +259,13 @@
     allInputs.forEach(sel => { const el = document.querySelector(sel); if (el) el.addEventListener('input', () => { saveFullInvoice(); updateLivePreview(); }); });
     document.getElementById('downloadPdfBtn')?.addEventListener('click', () => { const w = window.open('', '_blank'); w.document.write(`<html><head><title>Invoice</title><style>body{font-family:'Geist',sans-serif;padding:2rem;}</style></head><body>${document.getElementById('livePreviewContent').innerHTML}</body></html>`); w.document.close(); w.print(); });
     document.getElementById('exportForgeBtn')?.addEventListener('click', () => { const inv = { items, from: { name: document.getElementById('fromName')?.value }, to: { name: document.getElementById('toName')?.value }, settings: { invoiceNumber: document.getElementById('invNumber')?.value } }; const data = JSON.stringify(inv, null, 2); const blob = new Blob([data], {type:'application/json'}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `${document.getElementById('invNumber')?.value||'invoice'}.forge`; a.click(); URL.revokeObjectURL(url); });
+
     // Initialize
-    loadSavedData(); if (!items.length) { items = [{ id: Date.now(), description: '', qty: 1, rate: 0 }]; renderItemsTable(); }
+    loadSavedData();
+    if (!items.length) { items = [{ id: Date.now(), description: '', qty: 1, rate: 0 }]; renderItemsTable(); }
     if (!document.getElementById('issueDate').value) document.getElementById('issueDate').value = new Date().toISOString().slice(0,10);
-    calculateTotals(); updateLivePreview();
+    calculateTotals();
+    updateLivePreview();
 </script>
 </body>
 </html>
